@@ -2,10 +2,14 @@
 
 ## 1.0.0 - 2026-10-20
 
-First stable 项目工作区与版本管理 group; 2 declared members. See MIGRATION.md and RELEASE_NOTES.md.
+First stable Workspace Skills Suite group; 2 declared members. See MIGRATION.md and RELEASE_NOTES.md.
 
 ## Pre-stable history
 
-### 首稳发布说明完善（2026-10-20，发布前）
+### Release documentation preparation (2026-10-20, before publication)
 
-补齐用途与任务示例、固定版本 skills.sh 安装/依赖/卸载说明和 Release 正文。公开版本仍为 1.0.0；未据此声明已发布或部署。
+Added scope and task examples, pinned skills.sh setup and removal instructions, dependency guidance, and release notes. The public version remains 1.0.0; documentation preparation alone does not establish release publication or deployment.
+
+### English public documentation (2026-10-21, before the stable release)
+
+Standardized README, installation, release notes, and changelog prose in English. Existing runtime behavior, Skill IDs, and the first-stable 1.0.0 contract are unchanged.
