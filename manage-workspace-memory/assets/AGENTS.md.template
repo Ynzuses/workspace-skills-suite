@@ -1,0 +1,65 @@
+# Workspace Collaboration Contract
+
+## Scope and Entry
+
+- Workspace purpose: `<purpose>`
+- Long-term routing entry: `<relative-link>`
+- Current-status route: `<relative-link-or-pattern>`
+- Frozen or read-only areas: `<locations-or-none>`
+- Allowed write scope: `<locations>`
+
+## Every New Session
+
+1. Invoke `manage-workspace-memory` implicitly for workspace startup and read this entry plus the long-term routing entry completely.
+2. Detect Git and read the nearest repository plus separately owned nested repositories when available; record `unavailable`, `not_repository`, or `read_error` and continue if it cannot be used.
+3. Resolve the active project or deliverable, then read its current status and relevant version record.
+4. Follow only task-relevant design, asset, dependency, topic, version, and primary-evidence links.
+5. Verify consequential state against physical artifacts before mutation.
+
+For every versioned artifact family, record whether the release identity is controlled by the receiving party (`receiver_delivery`) or by the workspace owner (`owner_iteration`). Use strict SemVer 2.0.0 for compatibility and a separate revision field for correction rounds. A Git commit is provenance, not a version bump.
+
+## Capability Checkpoint
+
+Before the next bounded action, match its purpose, authoritative target, operation, and validation needs against current advertised Skills and tools. Repeat at task/phase/format/system changes, compaction/resume, and material capability failure. Include relevant user-maintained, third-party, system, and plugin Skills as well as built-in/local/MCP/connector tools. Do not require the user to name them. Read selected Skill instructions and use the host's actual discovery/schema protocol before acting; a remembered name is not an instruction read or current access check.
+
+During bootstrap, adapt the shortlist below from capabilities actually observed and relevant to this project. Search current metadata beyond it when the task changes. Keep unchanged instructions for unchanged steps; do not reload the entire catalog or invoke a specialist for a simple task with no benefit.
+
+| Project task/authoritative target | Method and executor route | Discovery evidence / refresh trigger | Composition or exclusion boundary |
+| --- | --- | --- | --- |
+| `<task pattern inferred from deliverables>` | `<provider-qualified Skill plus relevant tool family>` | `<current catalog/schema evidence; recheck condition>` | `<when to compose, fall back, or not invoke>` |
+
+Build rows from current descriptions and target-specific authorities, such as status, style guide, data contract, or delivery rules. A Skill supplies method; an MCP/connector can supply access or execution. Compose distinct responsibilities and required companions. Installed/configured, advertised, instruction-read, access-verified, and successfully executed are different states. Do not install, enable, connect, expand access, or send/publish solely because a capability would help.
+
+Use a lifecycle orchestrator only when an upstream authority change invalidates several downstream artifacts, exact candidate/submitted/revision/release state must be governed, or multiple linked deliverables need one traceable transition. Two adjacent specialist tasks may compose directly without an orchestrator.
+
+## Event-Driven Maintenance
+
+During an active session, `manage-workspace-memory` records only durable changes to policy, scope, approved design, authority, dependency, blocker, current state, frozen identity, or next action. Transient commands and unchanged inspections do not trigger memory writes.
+
+Before batch output, choose its purpose/lifecycle destination. After a revision is superseded, a phase closes, or a materially changed session ends, reassess the owning directory and affected children, including source, scratch, and archive folders. Identify current artifacts from verified authority records, keep required dependencies and frozen baselines, and group closed revisions by useful retrieval purpose. Within existing task/standing authority, organize and verify paths/integrity; otherwise prepare an exact bounded plan. Counts and age alone do not authorize archival or deletion. Invoke the Skill's directory-lifecycle route when needed; an unchanged healthy check writes no memory.
+
+At closure, rerun the optional Git read when tracked artifacts or release metadata changed, and bind the handoff to the final `HEAD` and clean/dirty state. Never claim a commit that was not made.
+
+Before closing a materially changed session:
+
+1. verify the claimed artifacts;
+2. update only affected status, design, index, DAG, topic, or history authorities;
+3. record a concrete first safe next action and blocker clearance conditions;
+   For unfinished work, include the needed method/executor, instruction route, checks actually completed, and catalog/schema/access checks to repeat on resume. Keep this in the existing handoff, not a catalog dump.
+4. run the three-hop recovery check;
+5. bind handoff records to the final post-metadata-edit artifacts.
+
+Implicit invocation is not permission to move, delete, overwrite, publish, push, alter frozen material, write outside scope, or install watchers/hooks/scheduled tasks. Check the current task and standing rules for explicit authority before those actions; do not request it again when already supplied. “Automatic maintenance” here means that an active, matching agent session follows this contract after a durable event; it does not mean continuous background monitoring.
+
+## Privacy and Local Boundaries
+
+- Sensitive material and handling: `<classes-and-rules>`
+- Version-control exclusions: `<classes>`
+- External-service policy: `<policy>`
+- Publication gate: `<clean-export-and-review-requirements>`
+
+## Project-Specific Conventions
+
+- Language and terminology: `<conventions>`
+- Environment and storage boundaries: `<conventions>`
+- Required validation or independent review: `<tests-and-triggers>`

@@ -1,0 +1,76 @@
+# Workspace Blueprint: `<workspace>`
+
+- Blueprint ID: `<stable-id>`
+- Prepared: `<YYYY-MM-DD timezone>`
+- Basis: `<read-only inventory links or methods>`
+- Status: `<proposed/approved/applied/superseded>`
+
+## Project Characteristics
+
+| Characteristic | Observed state | Structural implication | Evidence |
+| --- | --- | --- | --- |
+| Projects, products, or deliverables | `<count-and-roles>` | `<ownership partition>` | `<link-or-inspection>` |
+| Shared authorities | `<assets-or-none>` | `<common scope>` | `<link>` |
+| Lifecycles | `<active/generated/frozen/external>` | `<separation>` | `<link>` |
+| Privacy and access | `<classes>` | `<boundary>` | `<rule>` |
+| Computation and storage | `<local/remote/HPC/large data>` | `<root-and-provenance rule>` | `<link>` |
+| Version control and release | `<repositories/public outputs>` | `<tracking/export boundary>` | `<link>` |
+| Versioned artifact families | `<receiver_delivery/owner_iteration>` | `<SemVer and revision records>` | `<link>` |
+| Owners and readers | `<roles>` | `<federation or shared control>` | `<decision>` |
+
+## Selected Profile
+
+- Profile: `<lean/standard/federated/custom mapping>`
+- Rationale: `<why this is the smallest sufficient control plane>`
+- Existing conventions preserved: `<paths and reasons>`
+- Rejected alternatives: `<option and reason>`
+
+## Authority and Directory Map
+
+| Scope | Role | Current or proposed path | Authority state | Readers | Update trigger |
+| --- | --- | --- | --- | --- | --- |
+| `<scope>` | `<rules/status/design/assets/topic/DAG/history/audit>` | `<relative-path>` | `<existing/new/shared/mirror>` | `<roles>` | `<event>` |
+
+## Growth and Retention
+
+- Current artifact entry and version/revision route: `<location>`
+- Required evidence/dependencies and frozen-path boundary: `<locations and rules>`
+- Closed revision/phase retrieval and further grouping when crowded: `<archive route and grouping key>`
+- Transient output destination and retained reusable scripts: `<task/run area and maintained code area>`
+- Reassessment events and any local count signals: `<batch/revision/phase/closure; signals are advisory>`
+- Existing organization authority and unresolved move actions: `<scope and exact pending actions or none>`
+
+## Installed Capability Routes
+
+Populate a non-exhaustive shortlist from current Skill metadata and advertised built-in/local/MCP/connector tool surfaces, including relevant third-party methods. A route is justified by an observed project task and points to its authority. Distinguish current discovery from remembered configuration, and retain a task-change/compaction checkpoint in the actual instruction entry.
+
+| Project task pattern | Method / executor | Project authority or entry | Discovery evidence / refresh trigger | Composition / exclusion / fallback |
+| --- | --- | --- | --- | --- |
+| `<observed task>` | `<provider-qualified Skill; advertised tool family>` | `<relative route>` | `<catalog/schema observation; invalidation event>` | `<cross-boundary and availability conditions>` |
+
+## Change Plan
+
+| Action ID | Action | Exact target | Reason | Authorization | Validation | State |
+| --- | --- | --- | --- | --- | --- | --- |
+| `<id>` | `<keep/create/link/merge/move/retire/investigate>` | `<relative-path>` | `<reason>` | `<read-only/task-authorized/confirm>` | `<check>` | `<planned/applied/deferred>` |
+
+## Boundaries and Risks
+
+- Frozen or read-only material: `<locations and identities>`
+- Sensitive or excluded material: `<safe metadata only>`
+- Destructive or external actions requiring confirmation: `<actions>`
+- Unresolved authority conflicts: `<items and decision owner>`
+
+## Acceptance
+
+- [ ] Actual startup entry reaches rules/index, current status, and task evidence in at most three hops
+- [ ] One authority is named for each fact type and shared asset role
+- [ ] Existing coherent structure was mapped before any rename proposal
+- [ ] Git state was read when available, and no-Git state is recorded when unavailable
+- [ ] Each versioned artifact family has a purpose mode, SemVer, revision, and compatibility decision
+- [ ] No unauthorized move, overwrite, deletion, publication, or external transfer occurred
+- [ ] Read-only drift audit reviewed
+- [ ] Fresh-session recovery test passed
+- [ ] Representative fresh-session tasks selected the installed capability routes without requiring the user to name them
+- [ ] Task/phase changes and compaction recovery reconsider current third-party Skills and tool availability; unavailable tools and no-specialist tasks are handled honestly
+- [ ] No-change session leaves control-plane file hashes unchanged

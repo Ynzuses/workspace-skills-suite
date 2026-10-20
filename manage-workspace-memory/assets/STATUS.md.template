@@ -1,0 +1,66 @@
+# Current Status: `<scope>`
+
+- Status owner: `<person-role-or-process>`
+- Last verified: `<YYYY-MM-DD HH:MM timezone>`
+- Verification method: `<artifact inspection, command, render, query, etc.>`
+- Parent memory route: `<relative-link>`
+- Git state: `<available/unavailable/not_repository/read_error>`; coordinate: `<root@branch/HEAD/dirty-or-uncommitted>`
+
+## Objective
+
+`<current bounded objective>`
+
+## Verified State
+
+- Complete: `<verified outcome and authority link>`
+- In progress: `<work item and observable state>`
+- Not started: `<work item>`
+
+## First Safe Next Action
+
+`<one executable action, its input, expected output, and acceptance condition>`
+
+## Blockers and Decisions Needed
+
+| Item | Condition | Evidence | Clears when | Owner |
+| --- | --- | --- | --- | --- |
+| `<blocker-or-decision>` | `<current condition>` | `<link>` | `<observable condition>` | `<role>` |
+
+## Capability Continuation (omit when unnecessary)
+
+- Next action / authoritative input: `<bounded task and route>`
+- Method / instruction entry: `<provider-qualified Skill and declared location>`
+- Executor / observed state: `<tool family and operation; advertised/schema-read/access-verified/executed>`
+- Checks actually completed: `<instruction/schema/result evidence or none>`
+- Recheck on resume: `<current catalog/policy/schema/target access as needed>`
+- Fallback or exact blocker: `<alternative within authority or missing condition>`
+
+Keep only requirements for unfinished work. Do not persist credentials, catalogs, private endpoints, or full schemas; a prior availability observation is historical.
+
+## Current Authorities
+
+| Fact or output | Stable ID | Authority | State | Last verified |
+| --- | --- | --- | --- | --- |
+| `<fact>` | `<id>` | `<relative-link>` | `<current/provisional/stale>` | `<date/method>` |
+
+## Active Version Records
+
+| Stable ID | Purpose mode | Release version | Revision | Compatibility change | Frozen identity |
+| --- | --- | --- | --- | --- | --- |
+| `<artifact-family>` | `<receiver_delivery|owner_iteration>` | `<SemVer>` | `<r<number>>` | `<same-release-correction|patch|minor|major>` | `<hash/status/link>` |
+
+## Recent Consequential Changes
+
+- `<date>` — `<change>` — evidence: `<link>` — history: `<link>`
+
+## Risks and Assumptions
+
+- `<risk or explicitly provisional assumption>`
+
+## Closure Test
+
+- [ ] Claimed outputs inspected
+- [ ] Next action executable without chat history
+- [ ] Blockers have clearance conditions
+- [ ] Design and asset routes updated where needed
+- [ ] Closed detail archived and linked

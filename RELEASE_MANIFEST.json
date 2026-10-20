@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "group": "workspace-skills-suite",
+  "version": "1.0.0",
+  "skills": [
+    "manage-workspace-memory",
+    "git-workspace-closeout"
+  ],
+  "layout": "flat-skill-group",
+  "license": "Apache-2.0",
+  "owner": "Ynzuses",
+  "assurance": "Exact local package inventory; not an assertion of publication, automatic activation or native application acceptance."
+}

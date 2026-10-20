@@ -1,0 +1,26 @@
+# Version Record: `<stable-id>`
+
+> SemVer describes compatibility. Review revisions and Git coordinates are recorded separately.
+
+- Stable ID: `<artifact-family>`
+- Purpose mode: `<receiver_delivery|owner_iteration>`
+- Receiving party or owner: `<role-or-scope>`
+- First presented version: `<MAJOR.MINOR.PATCH>`
+- Release version: `<MAJOR.MINOR.PATCH>`
+- Review revision: `<r<number>>`
+- Compatibility change: `<same-release-correction|patch|minor|major>`
+- State: `<draft|candidate|submitted|accepted|superseded>`
+- Content SHA-256: `<digest-or-pending>`
+- Git coordinate: `<repository-relative-root>@<commit-or-uncommitted>`
+- Supersedes: `<stable-id/revision-or-none>`
+- Verification: `<method and YYYY-MM-DD HH:MM timezone>`
+
+## Version decision
+
+`<Explain why the receiver's acceptance or the owner's iteration controls the
+release identity, and why the selected SemVer component matches compatibility.>`
+
+## Revision and feedback route
+
+`<State how later feedback creates a new revision without mutating a submitted
+or frozen baseline.>`

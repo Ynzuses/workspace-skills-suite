@@ -1,0 +1,7 @@
+interface:
+  display_name: "Git Workspace Closeout"
+  short_description: "Close Git worktrees with remembered consent"
+  default_prompt: "Use $git-workspace-closeout to check saved local and remote preferences and finish this repository's authorized Git closeout."
+
+policy:
+  allow_implicit_invocation: true

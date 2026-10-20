@@ -1,0 +1,22 @@
+# Decision and Change History
+
+> Chronological evidence for reconstruction. Current state belongs in status; current contracts belong in stable design.
+
+## Entries
+
+### `<YYYY-MM-DD HH:MM timezone>` — `<event title>`
+
+- Scope: `<area ID>`
+- Event type: `<decision/change/migration/closure/recovery>`
+- Decision or change: `<what changed>`
+- Reason: `<why>`
+- Evidence: `<relative links, stable IDs, checks, or hashes>`
+- Version coordinate: `<SemVer; revision; purpose mode if applicable>`
+- Git coordinate: `<repository-relative-root@commit/branch or not applicable>`
+- Affected authorities: `<status/design/assets/rules>`
+- Supersedes: `<entry or decision ID, or none>`
+- Follow-up: `<next review trigger or none>`
+
+## Recording Rule
+
+Append only consequential events. Correct factual errors with an explicit amendment that preserves the original entry and links to the current authority.

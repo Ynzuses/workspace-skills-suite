@@ -1,0 +1,56 @@
+# Workspace Rules
+
+## Scope
+
+- Workspace purpose: `<purpose>`
+- Root convention: `<portable-root-or-relative-path>`
+- Applicable subproject rules: `<locations-or-none>`
+
+## Session Startup
+
+1. Read this file.
+2. Read `<long-term-memory-entry>`.
+3. Detect and read the nearest relevant Git repository when available; record the no-Git outcome without blocking work.
+4. Resolve the active scope and read its `<status-entry>` plus any relevant version record.
+5. Follow task-specific routes; do not load every topic memory.
+6. Verify consequential state against physical artifacts before mutation.
+
+## Task and Capability Routing
+
+Match the next bounded action to current advertised Skills and tools before implementation. Recheck after task/phase/format/system changes, compaction/resume, or a material capability failure. Consult fitting Skill instructions, including relevant third-party methods beyond the project's shortlist, and retrieve current tool schemas through the host's actual discovery protocol. Use a Skill for method and MCP/connector tools for appropriate access/execution; neither supplies missing permission. Keep unchanged instructions for unchanged work and allow a no-specialist choice for simple tasks. Persist only durable route/blocker changes and unfinished-work requirements; remembered availability is historical, not proof of current access or success.
+
+## Session Closure
+
+1. Verify claimed outputs.
+2. Update current status and the next executable action.
+3. Update version records for release identity, review revision, compatibility, or frozen-hash changes.
+4. Rerun the optional Git read and record the final coordinate without inventing a commit.
+5. Update design, asset indexes, and history only where their truth changed.
+6. Reassess affected directories and children; organize closed revisions within existing authority, retain an archive route, and record any exact pending action.
+
+## Directory Growth
+
+Choose purpose/lifecycle destinations before batch output. Reassess the affected scope after revision supersession or phase closure; include crowded source, scratch, and archive children. Keep one clear current entry and coherent historical bundles, preserve dependencies and frozen identities, and verify routes after authorized moves. Use the `manage-workspace-memory` directory-lifecycle route when needed. Count/age signals prompt review, not automatic moves or deletion; a healthy unchanged check creates no records.
+
+## Authority and Change Boundaries
+
+- Rules authority: `<file-or-owner>`
+- Current-status authority: `<file-or-pattern>`
+- Stable-design authority: `<file-or-pattern>`
+- Asset-location authority: `<file-or-pattern>`
+- Frozen or read-only areas: `<locations>`
+- Allowed write areas: `<locations>`
+- Required review before destructive or external actions: `<conditions>`
+
+## Privacy and Publication
+
+- Sensitive material: `<classes-and-handling>`
+- Version-control exclusions: `<classes>`
+- External-service policy: `<policy>`
+- Public-release gate: `<review-and-clean-export-requirements>`
+
+## Local Conventions
+
+- Preferred language and terminology: `<conventions>`
+- Tools and environment boundaries: `<conventions>`
+- Verification requirements: `<tests-or-evidence>`

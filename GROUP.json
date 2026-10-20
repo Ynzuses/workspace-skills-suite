@@ -1,0 +1,16 @@
+{
+  "schema_version": "1.0",
+  "id": "workspace-skills-suite",
+  "version": "1.0.0",
+  "skills": [
+    "manage-workspace-memory",
+    "git-workspace-closeout"
+  ],
+  "optional_groups": [
+    "research-skills-suite",
+    "office-authoring-suite"
+  ],
+  "required_member_dependencies": {},
+  "license": "Apache-2.0",
+  "owner": "Ynzuses"
+}
