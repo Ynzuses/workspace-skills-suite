@@ -2,6 +2,14 @@
 
 User consent controls **whether** the action is wanted. Sandbox/approval policy controls **whether the command can run**. Keep both checks: a saved automatic preference does not grant OS access, and Full access does not grant publication consent.
 
+**Full access is not required by this Skill.** A local commit needs writable Git metadata; a remote push additionally needs permitted network access and working host authentication. Default workspace file access alone can leave `.git` read-only, so policy persistence, staging and committing can fail even when editing ordinary files succeeds. An allowed approval for the same command or a separately authorized project profile can provide the missing access without removing every sandbox boundary.
+
+## Existing verification: reuse before repeating
+
+The source-side verification record dated **2026-10-15** reports a macOS ordinary-repository test with **Codex CLI 0.162.0-alpha.17.2**. The built-in `:workspace` profile rejected `.git/index.lock` writes. A named profile extending `:workspace`, granting only that repository's actual Git directory write access, retaining `.codex`/`.agents`/`.aws` read-only, and disabling network allowed the helper to save policy and create a one-file commit. Independent Git status was clean; protected-directory writes, an owned file outside the workspace, and a loopback bind remained blocked. Those sandbox commands did not use Full access.
+
+This is inherited, dated test evidence, not a new test of every receiver. Native Windows, linked worktrees, managed policies, actual approval services and an IDE's automatic selection of the profile were not established by that experiment. Check client support and the effective profile before promising unattended operation. The public package contains the reusable method, not the original machine's private configuration.
+
 ## Diagnosis and next action
 
 1. Resolve the physical root and actual Git metadata path, including linked worktrees. Read the current environment's permission/approval instructions; never assume an elevation tool exists.
@@ -54,7 +62,7 @@ For a managed client, administrator requirements still apply. If Full access is 
 
 ## Evidence and limitations
 
-These official pages were checked on 2026-10-20; current client policy and CLI flags must still be inspected:
+These official pages were checked again on 2026-10-21; current client policy and CLI flags must still be inspected:
 
 - [OpenAI: Permissions](https://learn.chatgpt.com/docs/permissions): named profiles, inheritance, exact-path overrides, configuration precedence and managed restrictions.
 - [OpenAI: Sandbox](https://learn.chatgpt.com/docs/sandboxing): filesystem/network boundaries, approval policy, command exceptions and Full access risks.

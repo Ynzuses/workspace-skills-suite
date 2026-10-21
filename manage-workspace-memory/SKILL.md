@@ -2,7 +2,7 @@
 name: manage-workspace-memory
 description: "Maintain durable project workspaces across sessions: authority and directory design, progressive memory, task-aware Skill/tool/MCP routing after phase changes or context recovery, historical-revision organization, status/index/DAG updates, SemVer identities, optional read-only Git recovery, and frozen handoffs. Compose with domain skills. Do not use for routine cleanup, one-off notes, isolated short-lived tasks, Git commits/pushes, or cloud/vector memory."
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Manage Workspace Memory

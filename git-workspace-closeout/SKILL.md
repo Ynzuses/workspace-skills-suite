@@ -3,21 +3,33 @@ name: git-workspace-closeout
 description: "Finish repository-wide Git snapshots and optional single-branch pushes under persistent, separate local and remote consent. Use for Git closeout, automation preferences, pending commits or permission failures; not for task-scoped staging, branch switching, repository creation or release publishing."
 license: Apache-2.0
 metadata:
-  version: "1.0.0"
+  version: "1.0.1"
 ---
 
 # Git Workspace Closeout
 
 Close a whole worktree under the user's chosen policy. Support local-only users and users who explicitly want remote updates; do not import a particular project's local-only preference into other repositories. `git commit` records locally; `git push` sends history to a remote, whose visibility may be private or public. Creating a public repository, changing visibility, releasing software and uploading artifacts are separate tasks.
 
-## Read and preserve consent first
+## First-use conversation
 
-Read applicable rules, current user instructions and the physical repository root. Use the stable entrypoint (or a verified thin project wrapper):
+On this Skill's first use in a physical repository, give a short user-facing introduction before any mutation. Explain that closeout snapshots cover the **whole worktree**, while a push sends committed history to one configured branch. Ordinary task-scoped commits, repository creation and releases use separate workflows. Installation starts no service and selects no consent mode.
+
+After reading the rules and policy read-only, state the actual local and remote modes, their scope, and the source of any applicable prior authorization. Explain `off` (disabled), `ask` (approve each current plan), and `auto` (reuse the saved scope without repeated consent questions). If either choice is missing, ask for it before saving policy or committing/pushing; present both together when both are missing. For example:
+
+> This Skill closes the whole worktree. Choose local snapshots: off / ask / auto, and remote pushes: off / ask / auto. Your choices apply to this repository and branch; enabling pushes also requires a reviewed destination and history. No preference has been selected for you.
+
+Reuse actual explicit choices without asking again. A narrow instruction to commit this task does not select automatic whole-worktree snapshots or remote pushes. When relying on standing authorization, explain what it already covers instead of silently presenting it as a default. Respond in the user's language; the example above is not a fixed script.
+
+Tell the user before setup that local writes need access to the actual Git metadata directory. **Full access is not a general requirement**: an allowed command approval or separately authorized narrow permission profile can suffice. Check the current client rather than enabling a broader mode. Read [permissions.md](references/permissions.md) if access is blocked; its documented profile result is a dated macOS test, not a Windows/IDE guarantee.
+
+## Read and preserve consent
+
+Read applicable rules, current user instructions and the physical repository root. Use the installed Python 3.10+ executable (`python3` or `python`, verified in this environment) with the shared driver, or the Bash forwarding entrypoint:
 
 ```bash
-bash "<skill-dir>/scripts/git_workspace_closeout.sh" policy-show
-bash "<skill-dir>/scripts/git_workspace_closeout.sh" session-status
-bash "<skill-dir>/scripts/git_workspace_closeout.sh" audit
+python "<skill-dir>/scripts/git_closeout.py" policy-show
+python "<skill-dir>/scripts/git_closeout.py" session-status
+python "<skill-dir>/scripts/git_closeout.py" audit
 ```
 
 Read [authorization.md](references/authorization.md) for setup, preference changes or any remote operation. Resolve **local snapshots** and **remote pushes** independently as `off`, `ask` or `auto`. Reuse explicit prior choices for the same repository and scope; ask only for missing choices, not again for an already selected automatic mode. If the user chose per-action confirmation, obtain a new affirmative reply for each concrete action; silence, an old reply, permission escalation or Full access is not that reply. Current user revocation takes effect before further mutations.
@@ -61,4 +73,4 @@ Even with Full access, do not reset, clean, stash, amend, rewrite history, delet
 
 ## Maintenance and validation
 
-Keep one implementation in `scripts/git_closeout.py`; shell files are stable forwarding entrypoints. Python 3.10+, Bash and Git are required. Run `python3 "<skill-dir>/scripts/test_git_closeout.py"` in a permitted environment: tests use disposable local repositories and bare fixtures, never external services. Test semantic authorization and scope invariants; static validation does not prove future agent compliance or client approval reliability.
+Keep one implementation in `scripts/git_closeout.py`; shell files are stable forwarding entrypoints. Python 3.10+ and Git are required; Bash is needed only for shell entrypoints and their tests, which expect `python3` on PATH. On Windows, the direct Python driver avoids that shell dependency and uses the same consent gates; it never bypasses a sandbox restriction. Run `python "<skill-dir>/scripts/test_git_closeout.py"` with the verified interpreter in a permitted environment: tests use disposable local repositories and bare fixtures, never external services. Test semantic authorization and scope invariants; static validation does not prove future agent compliance or client approval reliability.

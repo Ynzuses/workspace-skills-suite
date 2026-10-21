@@ -1,42 +1,30 @@
-# v1.0.0 — Workspace Skills Suite
+# v1.0.1 — Workspace Skills Suite
 
-Durable project memory, authority and directory design, resumable handoffs and separately authorized Git closeout.
+This patch makes Git closeout's first-use choices and execution requirements explicit. The first stable v1.0.0 remains unchanged.
 
-This is the group's first stable release. For continuing software, writing, operations, and research projects that need a clear maintenance authority, recoverable context, useful handoffs, or explicitly authorized repository-wide Git closeout.
+## What changed
 
-## Included in this release
+- The Skill entrypoint and UI prompt introduce whole-worktree scope before changes, explain `off` / `ask` / `auto`, show applicable prior authorization, and ask for missing local-snapshot and remote-push choices together. No preference is preselected.
+- README and the installation guide explain how consent, Git-metadata access, network, authentication and destination scope must match. Automatic consent does not grant operating-system permissions; Full access does not grant action consent.
+- The permission guide carries forward the dated successful macOS narrow-profile test and its untested client/platform boundaries. Full access is not a general requirement.
+- Windows users can call the existing Python driver directly; Bash and a `python3` alias are needed only for the optional shell entrypoints. The deterministic consent/runtime implementation is unchanged.
 
-- `manage-workspace-memory`
-- `git-workspace-closeout`
-
-Install members by task; other groups are optional companions. Memory management works without Git. The Git helper requires Python 3.10+, Git, and Bash. On Windows, Git for Windows supplies Bash. See the policy and permission guidance below before using repository-wide closeout.
-
-## Installation
+## Install or update
 
 ```sh
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.0 --skill "*" --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill "*" --agent codex
 ```
 
-Project scope is the default. Add `--global` for user-wide use or select one member with `--skill <skill-name>`. Check Node/npm/Git and existing installations first. See the [installation guide](INSTALL.md) for complete setup, dependencies, and removal.
+Requires Node.js 22.20.0+ and npm/npx for this installer, plus Git for repository downloads. Project scope is the default; add `--global` for user scope or `--copy` where links are unavailable. Review existing copies before replacing them. See [INSTALL.md](INSTALL.md) for both members, exact paths, runtime dependencies, the consent/permission matrix and removal.
 
-Local snapshots and remote pushes independently use `off`, `ask`, or `auto`; ask only for missing choices. Reuse explicit standing authorization within its scope. Task-scoped commits are outside repository-wide closeout. Restricted clients may require an allowed approval or separately authorized permission setup. Consider Full access only under the documented conditions; it does not replace action consent. See the guide for first-use diagnosis and permission limits.
+## Compatibility and verification
 
-## Migration
+Members remain `manage-workspace-memory` and `git-workspace-closeout`; command interfaces, stored policy schemas and repository boundaries are unchanged. Upgrade complete Skill directories; existing private repository preferences remain in Git metadata. Installation does not create policy, configure permissions or install background automation. See [MIGRATION.md](MIGRATION.md), [STABILITY.md](STABILITY.md), and [VALIDATION.md](VALIDATION.md).
 
-Read [MIGRATION.md](MIGRATION.md) before upgrading. Existing tags and versions retain their identities. Upgrading does not automatically remove old installations, install companion groups, or migrate local settings. `1.0.0` marks the first stable contract; internal review rounds are not public version numbers.
+Portable helper tests do not prove that every future agent invokes the Skill or that every client accepts a permission profile. The inherited profile experiment has its own date and platform; it is not claimed as a new cross-platform run.
 
-## Validation and limits
+## Downloads, license and feedback
 
-A Skill runs through an agent; it is not a background commit service. User consent, actual Skill invocation, and permission to execute are separate conditions. See [VALIDATION.md](VALIDATION.md) for applicable structural, script, and entrypoint checks. Static checks do not guarantee future agent invocation, native application acceptance, or an external connection.
+Assets: `workspace-skills-suite-1.0.1.zip` and `workspace-skills-suite-1.0.1.zip.sha256`. Compare the ZIP's SHA-256 with its companion file before extraction. The custom ZIP contains `SHA256SUMS` and `RELEASE_MANIFEST.json`; GitHub's automatic Source code archives have their own packaging bytes.
 
-## Downloads and checksums
-
-Custom assets: `workspace-skills-suite-1.0.0.zip` and `workspace-skills-suite-1.0.0.zip.sha256`. The extracted ZIP contains per-file `SHA256SUMS` and `RELEASE_MANIFEST.json`. GitHub's automatic Source code archives come from the tagged tree and have different packaging bytes and generated inventories.
-
-Use `Get-FileHash <zip-path> -Algorithm SHA256` on Windows, `shasum -a 256 <zip-path>` on macOS, or `sha256sum <zip-path>` on Linux, then compare the companion checksum. Signatures, platform listings, and native application acceptance are reported only when actually completed.
-
-Copyright 2026 Ynzuses. [Apache-2.0](LICENSE). See [NOTICE](NOTICE) for retained terms.
-
-## Feedback and contributions
-
-Use GitHub Issues for synthetic reproductions and installation feedback. See [CONTRIBUTING.md](CONTRIBUTING.md) for changes and validation expectations.
+Copyright 2026 Ynzuses. [Apache-2.0](LICENSE); retained terms in [NOTICE](NOTICE). Use [CONTRIBUTING.md](CONTRIBUTING.md) and GitHub Issues for synthetic, reproducible reports without private data.

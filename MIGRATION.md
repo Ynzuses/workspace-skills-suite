@@ -20,3 +20,7 @@ Before upgrading, inspect active installations across agent/plugin discovery roo
 `research-document-delivery` keeps its historical ID. Its stable scope includes professional and academic rich documents; scientific evidence methods are optional and topic-dependent. Word creates ordinary new documents; document delivery owns preservation-sensitive revisions and final validation.
 
 The two teaching/learning methods are not bundled in these six groups. Third-party Skills mentioned as examples retain their own distribution and license identities.
+
+## 1.0.0 to 1.0.1
+
+Replace complete member directories using the new fixed tag. This documentation/UI correction preserves member IDs, CLI behavior and private policy schemas. Existing explicit preferences are reused for their original repository and scope; missing choices are requested before setup. No client permissions or installed project rules are changed automatically.

@@ -1,6 +1,10 @@
 # Changelog
 
-## 1.0.0 - 2026-10-20
+## 1.0.1 - 2026-10-21
+
+Clarified Git first-use scope, independent preference selection, prior authorization disclosure and the interaction between consent and execution permissions. Documented the inherited successful macOS narrow-profile test with its limits and the existing direct Python route for Windows. No runtime, policy-schema or member-ID changes. Preserved published v1.0.0 bytes and tag.
+
+## 1.0.0 - 2026-10-21
 
 First stable Workspace Skills Suite group; 2 declared members. See MIGRATION.md and RELEASE_NOTES.md.
 

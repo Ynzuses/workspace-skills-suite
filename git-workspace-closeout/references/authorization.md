@@ -2,6 +2,8 @@
 
 ## Establish the two choices independently
 
+Before setup, follow the first-use conversation in [SKILL.md](../SKILL.md). Show the user the actual scope and existing authorization, explain all three modes, and ask for both missing choices together. There is no preselected consent policy. An instruction for one task's commit cannot silently become a standing preference for whole-worktree snapshots. Initial `policy-set` requires both channel choices; remote `off` is a user choice to collect, not a value to invent when the user has only chosen local automation.
+
 Read current user instructions, applicable repository rules and `policy-show` first. Reuse explicit standing authorization. If a choice is missing, ask whether **local whole-worktree snapshots** should be off, confirmed every time, or automatic; ask the same separately for **remote pushes**. Present both together if both are missing. Do not reinterpret “automatic commits” as permission to send data elsewhere. If “open source” is ambiguous, resolve the intended hosting repository, branch and public visibility before transmission.
 
 Scope defaults to this physical repository/worktree and its current branch, not all repositories. If a user explicitly requests wider branch scope, enumerate those branches. No default global preference is created. If local mode is `off`, remote mode can still send an explicitly reviewed, already-existing commit; it cannot create new commits implicitly.

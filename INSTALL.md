@@ -1,6 +1,6 @@
 # Workspace Skills Suite: installation and deployment
 
-This guide uses the Vercel `skills` CLI behind [skills.sh](https://skills.sh/docs/cli). Commands pin the installer to `skills@1.7.4`; the product tag is `v1.0.0`. These are independent versions. Remote commands require the repository and tag to have been published. Before that, use the local-directory route below.
+This guide uses the Vercel `skills` CLI behind [skills.sh](https://skills.sh/docs/cli). Commands pin the installer to `skills@1.7.4`; the product tag is `v1.0.1`. These are independent versions. The tagged repository and release ZIP are alternative installation sources.
 
 ## 1. Prepare the environment and inspect existing installations
 
@@ -19,8 +19,8 @@ The first npx run may ask to download the CLI. Inspect existing Skills with the 
 ## 2. Inspect members, then install
 
 ```sh
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.0 --list
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.0 --skill "*" --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --list
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill "*" --agent codex
 ```
 
 Expect **2** members: `manage-workspace-memory`, `git-workspace-closeout`. `--skill "*"` selects this group's members. Avoid `--all` here because it also selects all agents. Review the destination and installation method in the interactive prompts.
@@ -28,11 +28,11 @@ Expect **2** members: `manage-workspace-memory`, `git-workspace-closeout`. `--sk
 To select one member or install the group for your user account:
 
 ```sh
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.0 --skill manage-workspace-memory --agent codex
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.0 --skill "*" --agent codex --global
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill manage-workspace-memory --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill "*" --agent codex --global
 ```
 
-`--global` makes the installation available across projects; omitting it selects the current project. Keep double quotes around the star in PowerShell and common Unix shells. `/tree/v1.0.0` selects the Git tag. Do not append `@1.0.0` to a repository shorthand to mean a product version: the CLI also uses `@` to select a Skill.
+`--global` makes the installation available across projects; omitting it selects the current project. Keep double quotes around the star in PowerShell and common Unix shells. `/tree/v1.0.1` selects the Git tag. Do not append `@1.0.1` to a repository shorthand to mean a product version: the CLI also uses `@` to select a Skill.
 
 ## 3. Choose an agent and installation method
 
@@ -47,7 +47,7 @@ The CLI supports symbolic links and copies. Add `--copy` when links are unavaila
 
 ## 4. Use a release ZIP or local checkout
 
-Download `workspace-skills-suite-1.0.0.zip`, verify it against the companion `.sha256` file, and extract it. A complete checkout of the fixed tag also works. Install the member directories rather than treating the whole repository as one Skill. Replace this example with the actual extracted group directory:
+Download `workspace-skills-suite-1.0.1.zip`, verify it against the companion `.sha256` file, and extract it. A complete checkout of the fixed tag also works. Install the member directories rather than treating the whole repository as one Skill. Replace this example with the actual extracted group directory:
 
 ```sh
 npx skills@1.7.4 add "./workspace-skills-suite" --list
@@ -60,13 +60,13 @@ The custom asset contains `SHA256SUMS` and `RELEASE_MANIFEST.json`. GitHub's aut
 
 ## 5. Prepare runtime dependencies
 
-Memory management works without Git. The Git helper requires Python 3.10+, Git, and Bash. On Windows, Git for Windows supplies Bash. See the policy and permission guidance below before using repository-wide closeout.
+Memory management works without Git. The Git driver requires Python 3.10+ and Git. Bash is needed only for the optional shell entrypoints; on Windows, the direct Python driver avoids shell/Python-name differences. See the policy and permission guidance below before using repository-wide closeout.
 
 The CLI installs member directories. It does not run pip, install Office, connect accounts, or copy group-root support kits. Retain the full checkout or extracted group when using root-level requirements files and test kits. Select execution tools from the actual task environment.
 
 ## Git first use and diagnosis
 
-Ask the agent explicitly:
+The first invocation introduces whole-worktree scope and both preference channels before any mutation. It shows actual saved modes or applicable prior authorization; it does not silently select defaults. Ask the agent explicitly:
 
 > Use $git-workspace-closeout to inspect this physical repository's policy and status read-only. Read existing explicit instructions, ask only for missing local-snapshot and remote-push choices, and do not commit or push yet.
 
@@ -75,7 +75,7 @@ Ask the agent explicitly:
 | Repository-wide local snapshot | Do not create a snapshot | Approve each concrete plan | Review and execute within the saved scope |
 | Single-branch remote push | Do not transmit | Separately approve each push plan | Execute only to the bound, reviewed destination |
 
-Choose the channels independently. Ask for missing choices and do not inherit them across repositories. Installation does not save policy. Reuse existing explicit authorization only within its original scope; unconfigured remote operation cannot become automatic. `ask` requires a real current reply. Full access, silence, and installer `--yes` do not provide that reply.
+Choose the channels independently. If both are missing, the agent asks for both together. A narrow task-commit instruction is not a standing whole-worktree preference. Ask for missing choices and do not inherit them across repositories. Installation does not save policy. Reuse existing explicit authorization only within its original scope; unconfigured remote operation cannot become automatic. `ask` requires a real current reply. Full access, silence, and installer `--yes` do not provide that reply.
 
 From the target repository, run these read-only commands after replacing `<skill-dir>` with the actual installed directory:
 
@@ -89,11 +89,32 @@ python "<skill-dir>/scripts/git_closeout.py" audit
 
 **Why might a commit happen without another question?** A saved `auto` choice or an explicit standing instruction may already cover the action. Ordinary task-scoped staging or committing is also outside this Skill's repository-wide closeout. In contrast, a new repository with no choices or applicable authorization should not receive an automatic whole-worktree commit through this Skill. Check actual Skill loading, policy/session output, and operation scope rather than relying on installed files alone.
 
-### When Full access may matter
+### How consent and execution permissions match
 
-Local commits write Git metadata. If a client protects `.git`, inspect the actual Git directory, effective permissions, and allowed approval mechanism. Prefer an available command-specific approval or a separately authorized and tested profile that grants write access to one repository's Git directory. If neither is available and unattended writes are required, the user may need to choose Full access in that client. Managed environments retain their administrator requirements.
+Consent and execution permissions must both allow the action. `auto` removes repeated **consent** questions within the saved scope; it does not remove the client's execution approvals. An `ask` action still waits for your reply even in an unrestricted client.
 
-Full access broadens file and network access. Repository code, hooks, and mistaken commands can affect unrelated assets. It does not authorize pushes, remote-repository creation, or publication. The Skill neither changes permissions automatically nor bypasses denials. Read its `references/permissions.md` and the [OpenAI permissions documentation](https://learn.chatgpt.com/docs/permissions) before reviewing any configuration.
+| Saved choice | Effective environment | Result |
+| --- | --- | --- |
+| No initial choices | Any permissions, including Full access | Read-only inspection; ask for missing choices before saving policy or changing Git state |
+| Local `off` | Git metadata writable | No local snapshot |
+| Local `ask` | Git metadata writable | Show the current plan and await affirmative approval before committing |
+| Local `auto` | Git metadata protected as read-only | Stop at the permission boundary; use a permitted approval or separately authorized profile setup |
+| Local `auto` | Actual Git directory writable under an authorized profile | Review and commit within the saved scope; other Git blockers still apply |
+| Remote `off` | Network and credentials available | No push; local consent does not authorize transmission |
+| Remote `ask` or `auto` | Network blocked, credentials unavailable, or destination/history outside the saved scope | Stop and report the concrete blocker; a successful local commit remains local |
+| Remote `ask` or `auto` | Network, authentication and reviewed scope available | Push only after the applicable per-plan approval or saved automatic consent |
+
+### Permission setup without requiring Full access
+
+Local commits and private policy persistence need writable Git metadata. In Codex's default workspace sandbox, `.git` can stay read-only even though ordinary project files are editable. Repeating the command or selecting `auto` does not change that boundary. Prefer an allowed approval for the same bounded command. For unattended local closeout, a separately authorized named profile can retain workspace isolation and grant writes to one verified Git directory while keeping network disabled.
+
+The [permission reference](git-workspace-closeout/references/permissions.md) contains the TOML example and verification steps. Its inherited **2026-10-15 macOS / Codex CLI 0.162.0-alpha.17.2** record reports successful policy persistence and a one-file commit under such a profile, with protected directories, outside writes and loopback binding still blocked. This demonstrates that Full access is not inherently necessary. It does not establish native Windows, linked-worktree, managed-policy or IDE-default compatibility; inspect the current client and effective profile before configuring it. No machine-specific configuration is shipped or applied by installation.
+
+Only when the client permits neither a suitable narrow profile nor a command approval, and unattended Git writes are required, may Full access be needed. It broadens file and network access and still cannot fix locks, missing Git identity, failing hooks, authentication or server rules. It never replaces commit/push consent. The Skill does not change permissions or retry an explicit denial through another tool. See [OpenAI permissions](https://learn.chatgpt.com/docs/permissions) for current client policy.
+
+### Windows and Python command names
+
+Use a verified Python 3.10+ executable: `python --version`, then the direct driver commands above; on systems using `python3`, substitute that name. The Python driver and shell wrapper share the same implementation and consent gates. Git for Windows supplies Bash when using the optional `.sh` entrypoints; those expect `python3` on Bash's PATH. If that name is absent, use the direct driver instead of changing global aliases. Changing the entrypoint cannot make protected metadata writable.
 
 ## 6. Verify discovery and invocation
 

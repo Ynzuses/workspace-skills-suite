@@ -1,6 +1,12 @@
 # Git Workspace Closeout
 
-A Git closeout Skill with durable, independent consent for local snapshots and optional remote pushes, maintained in Workspace Skills Suite 1.0.0. It requires Python 3.10+, Bash and Git. Start with [SKILL.md](SKILL.md).
+A Git closeout Skill with durable, independent consent for local snapshots and optional remote pushes, maintained in Workspace Skills Suite 1.0.1. It requires Python 3.10+ and Git; Bash is needed for the optional shell entrypoints. Start with [SKILL.md](SKILL.md).
+
+## Before the first closeout
+
+The agent first explains that this Skill snapshots the **whole worktree** and that pushing transmits committed history. It reads rules and saved policy read-only, shows any applicable prior choices and their scope, and asks for missing local and remote choices together. No consent mode is preselected. Ordinary task-scoped commits and release publishing use separate workflows; installing this Skill does not intercept every Git command.
+
+Full access is not a general requirement. Local commits need writable Git metadata. Use the client's allowed command approval or a separately authorized narrow profile when available. The [permission guide](references/permissions.md) records a successful macOS profile test and its limits; do not assume that result validates a different client automatically.
 
 ## Choose once, remember per repository
 
@@ -18,7 +24,7 @@ The private record is in the physical worktree's Git directory under `codex-clos
 
 ## Codex permissions: read before enabling unattended automation
 
-In the default `workspace-write` sandbox, `.git` metadata is protected as read-only. Writing normal project files does not ensure `git add` or `git commit` can succeed. Repeating the command does not remove this protection. Use an allowed, bounded command approval or trusted command rule. Where supported and explicitly requested, a named permission profile can retain workspace isolation while granting writes to **one verified repository's Git directory**; a local-only profile can keep network disabled. The [configuration example and verification procedure](references/permissions.md) explain beta support, legacy-setting conflicts, linked-worktree limits and the fact that this grants metadata writes to all executed commands.
+In the default `workspace-write` sandbox, `.git` metadata is protected as read-only. Writing normal project files does not ensure `git add` or `git commit` can succeed. Repeating the command does not remove this protection. Use an allowed, bounded command approval or trusted command rule. Where supported and explicitly requested, a named permission profile can retain workspace isolation while granting writes to **one verified repository's Git directory**; a local-only profile can keep network disabled. The [configuration example and verification procedure](references/permissions.md) explain client support, legacy-setting conflicts, linked-worktree limits and the fact that this grants metadata writes to all executed commands.
 
 **If your client/policy supports neither a suitable narrow profile nor a command-level permission path, and you want Git to run without platform prompts, you may need to select Full access yourself.** This removes filesystem and network sandbox boundaries and permits commands to reach unrelated files and services. Mistakes, malicious content or repository hooks can therefore affect assets outside the project. It is not a guarantee that Git will succeed: locks, identity, hooks, authentication and server rules can still fail.
 
