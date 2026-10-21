@@ -52,3 +52,5 @@ A restricted client may protect `.git`. Prefer an allowed command-specific appro
 Optional companion groups: `research-skills-suite`, `office-authoring-suite`. They are independent distributions and are not installed with this group. When reporting a problem, include agent/CLI versions, reproducible steps, errors, and a synthetic example. Remove credentials, personal data, and unpublished material.
 
 Copyright 2026 Ynzuses. [Apache-2.0](LICENSE). See [NOTICE](NOTICE) and [PROVENANCE.md](PROVENANCE.md) for attribution and retained component terms.
+
+For proposed changes and reproducible reports, see [CONTRIBUTING.md](CONTRIBUTING.md).

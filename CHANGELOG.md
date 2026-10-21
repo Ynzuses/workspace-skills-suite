@@ -13,3 +13,7 @@ Added scope and task examples, pinned skills.sh setup and removal instructions, 
 ### English public documentation (2026-10-21, before the stable release)
 
 Standardized README, installation, release notes, and changelog prose in English. Existing runtime behavior, Skill IDs, and the first-stable 1.0.0 contract are unchanged.
+
+### Community reporting before stable publication
+
+Added a structured bug-report form and completed the contribution guidance for the stable repository.
