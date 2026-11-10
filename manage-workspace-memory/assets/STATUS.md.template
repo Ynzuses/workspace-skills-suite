@@ -64,3 +64,4 @@ Keep only requirements for unfinished work. Do not persist credentials, catalogs
 - [ ] Blockers have clearance conditions
 - [ ] Design and asset routes updated where needed
 - [ ] Closed detail archived and linked
+- [ ] Superseded statements replaced, not kept beside their successors; this file is within the startup budget

@@ -29,6 +29,14 @@ ENTRY_POINT_NAMES = {
 
 MARKDOWN_SUFFIXES = {".md", ".markdown", ".mdown"}
 
+# Files that a new session reads before it can choose task evidence.  A public
+# README is excluded because its length follows its audience, not the startup
+# route.  The budget is a UTF-8 byte count, which tracks reading cost more
+# evenly across scripts than a character or line count.
+STARTUP_ENTRY_NAMES = {"agents.md", "claude.md", "workspace_rules.md"}
+STARTUP_INDEX_STEMS = {"memory"}
+DEFAULT_STARTUP_BUDGET_BYTES = 32 * 1024
+
 # These directories are implementation/cache internals rather than workspace
 # memory.  The list is deliberately short and predictable.
 IGNORED_DIRECTORY_NAMES = {
@@ -344,6 +352,18 @@ class Issue:
 
 
 @dataclass(frozen=True)
+class AuditScope:
+    """What the audit actually read, so that a pass is never broader than its scope."""
+
+    mode: str
+    entries: tuple[str, ...]
+    excluded_directories: tuple[str, ...]
+    markdown_files_not_reached: int
+    markdown_files_in_excluded: int
+    links_into_excluded: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class AuditResult:
     root: str
     markdown_file_count: int
@@ -351,6 +371,7 @@ class AuditResult:
     status_files: tuple[str, ...]
     three_hop_routes: tuple[str, ...]
     issues: tuple[Issue, ...]
+    scope: AuditScope
 
 
 def _configure_utf8_streams() -> None:
@@ -400,8 +421,17 @@ def _read_utf8_strict(path: Path) -> str:
         raise WorkspaceReadError(f"cannot read {path}: {exc}") from exc
 
 
-def _collect_documents(root: Path) -> tuple[list[Document], list[Issue]]:
+def _enumerate_markdown(
+    root: Path, excluded: Sequence[Path] = ()
+) -> tuple[list[Path], int]:
+    """List auditable Markdown paths without reading them.
+
+    Files below a declared excluded directory are counted but not returned, so
+    the report can state how much was deliberately left unchecked.
+    """
+
     candidates: list[Path] = []
+    excluded_count = 0
 
     def on_walk_error(error: OSError) -> None:
         location = error.filename or str(root)
@@ -411,6 +441,8 @@ def _collect_documents(root: Path) -> tuple[list[Document], list[Issue]]:
         for directory, directory_names, file_names in os.walk(
             root, topdown=True, onerror=on_walk_error, followlinks=False
         ):
+            current = Path(directory)
+            in_excluded = any(_is_within(current, folder) for folder in excluded)
             directory_names[:] = sorted(
                 (
                     name
@@ -423,13 +455,22 @@ def _collect_documents(root: Path) -> tuple[list[Document], list[Issue]]:
             for name in sorted(file_names, key=_stable_text_key):
                 candidate = Path(directory, name)
                 if candidate.suffix.casefold() in MARKDOWN_SUFFIXES:
-                    candidates.append(candidate)
+                    if in_excluded:
+                        excluded_count += 1
+                    else:
+                        candidates.append(candidate)
     except OSError as exc:
         raise WorkspaceReadError(f"cannot enumerate {root}: {exc}") from exc
 
     candidates.sort(
         key=lambda path: _stable_text_key(_to_relative_posix(path, root))
     )
+    return candidates, excluded_count
+
+
+def _collect_documents(
+    root: Path, candidates: Sequence[Path]
+) -> tuple[list[Document], list[Issue]]:
     documents: list[Document] = []
     issues: list[Issue] = []
     for path in candidates:
@@ -456,6 +497,82 @@ def _collect_documents(root: Path) -> tuple[list[Document], list[Issue]]:
             )
         )
     return documents, issues
+
+
+def _resolve_scope_directory(root: Path, value: str) -> Path:
+    raw = Path(value)
+    candidate = raw if raw.is_absolute() else root / raw
+    try:
+        resolved = candidate.resolve(strict=True)
+    except OSError as exc:
+        raise WorkspaceReadError(f"cannot resolve excluded directory {value!r}: {exc}") from exc
+    if not resolved.is_dir() or not _is_within(resolved, root) or resolved == root:
+        raise WorkspaceReadError(
+            f"excluded directory must be an existing subdirectory of the audit root: {value!r}"
+        )
+    return resolved
+
+
+def _resolve_entry(
+    root: Path, value: str, candidate_by_resolved: dict[Path, Path]
+) -> Path:
+    raw = Path(value)
+    candidate = raw if raw.is_absolute() else root / raw
+    try:
+        resolved = candidate.resolve(strict=True)
+    except OSError as exc:
+        raise WorkspaceReadError(f"cannot resolve entry {value!r}: {exc}") from exc
+    entry = candidate_by_resolved.get(resolved)
+    if entry is None:
+        raise WorkspaceReadError(
+            f"entry is not an auditable Markdown file inside the audit root "
+            f"(outside the root, excluded, ignored, or not Markdown): {value!r}"
+        )
+    return entry
+
+
+def _collect_scoped_documents(
+    root: Path,
+    entries: Sequence[Path],
+    candidates: Sequence[Path],
+    excluded: Sequence[Path],
+) -> tuple[list[Document], set[str]]:
+    """Read declared entries and the Markdown they reach through local links.
+
+    Only documents reached from a declared entry are read.  A link into an
+    excluded directory is recorded and not followed, so historical snapshots,
+    templates or third-party copies can keep their original bytes and links.
+    """
+
+    candidate_by_resolved = {path.resolve(strict=False): path for path in candidates}
+    queue: list[Path] = list(entries)
+    seen: set[Path] = set()
+    documents: list[Document] = []
+    links_into_excluded: set[str] = set()
+    while queue:
+        path = queue.pop(0)
+        resolved = path.resolve(strict=False)
+        if resolved in seen:
+            continue
+        seen.add(resolved)
+        document = Document(
+            path=path,
+            relative_path=_to_relative_posix(path, root),
+            text=_read_utf8_strict(path),
+        )
+        documents.append(document)
+        for _, raw_destination in _iter_active_markdown_destinations(document):
+            target = _resolve_existing_local_target(root, document, raw_destination)
+            if target is None:
+                continue
+            if any(_is_within(target, folder) for folder in excluded):
+                links_into_excluded.add(_to_relative_posix(target, root))
+                continue
+            follow = candidate_by_resolved.get(target)
+            if follow is not None and target not in seen:
+                queue.append(follow)
+    documents.sort(key=lambda document: _stable_text_key(document.relative_path))
+    return documents, links_into_excluded
 
 
 def _is_placeholder_body(body: str) -> bool:
@@ -1289,6 +1406,47 @@ def _check_status_files(documents: Sequence[Document]) -> tuple[list[str], list[
     return [document.relative_path for document in status_documents], issues
 
 
+def _check_startup_budget(
+    root: Path,
+    documents: Sequence[Document],
+    status_files: Sequence[str],
+    budget_bytes: int,
+) -> list[Issue]:
+    """Report startup-path documents whose size exceeds the reading budget."""
+
+    if budget_bytes <= 0:
+        return []
+    status_paths = set(status_files)
+    issues: list[Issue] = []
+    for document in documents:
+        if document.relative_path in status_paths:
+            role = "Status document"
+        elif (
+            document.path.parent == root
+            and document.path.name.casefold() in STARTUP_ENTRY_NAMES
+        ):
+            role = "Root instruction entry"
+        elif document.path.stem.casefold() in STARTUP_INDEX_STEMS:
+            role = "Long-term memory index"
+        else:
+            continue
+        size = len(document.text.encode("utf-8"))
+        if size > budget_bytes:
+            issues.append(
+                Issue(
+                    code="STARTUP_FILE_OVER_BUDGET",
+                    path=document.relative_path,
+                    line=None,
+                    message=(
+                        f"{role} is {size} UTF-8 bytes, above the {budget_bytes}-byte "
+                        "startup budget. Move superseded snapshots and closed detail to "
+                        "history or audit records and leave a route."
+                    ),
+                )
+            )
+    return issues
+
+
 def _resolve_existing_local_target(
     root: Path, document: Document, raw_destination: str
 ) -> Path | None:
@@ -1526,7 +1684,12 @@ def _check_three_hop_routes(
     ]
 
 
-def audit_workspace(root_argument: Path) -> AuditResult:
+def audit_workspace(
+    root_argument: Path,
+    startup_budget_bytes: int = DEFAULT_STARTUP_BUDGET_BYTES,
+    entries: Sequence[str] = (),
+    exclude: Sequence[str] = (),
+) -> AuditResult:
     try:
         root = root_argument.expanduser().resolve(strict=True)
     except OSError as exc:
@@ -1534,15 +1697,47 @@ def audit_workspace(root_argument: Path) -> AuditResult:
     if not root.is_dir():
         raise WorkspaceReadError(f"audit root is not a directory: {root}")
 
-    documents, issues = _collect_documents(root)
-    entry_points = sorted(
-        (
-            document.relative_path
-            for document in documents
-            if document.path.parent == root
-            and document.path.name.casefold() in ENTRY_POINT_NAMES
-        ),
-        key=_stable_text_key,
+    excluded = sorted(
+        {_resolve_scope_directory(root, value) for value in exclude},
+        key=lambda path: _stable_text_key(_to_relative_posix(path, root)),
+    )
+    candidates, excluded_count = _enumerate_markdown(root, excluded)
+    links_into_excluded: set[str] = set()
+    if entries:
+        candidate_by_resolved = {
+            path.resolve(strict=False): path for path in candidates
+        }
+        entry_paths = [
+            _resolve_entry(root, value, candidate_by_resolved) for value in entries
+        ]
+        documents, links_into_excluded = _collect_scoped_documents(
+            root, entry_paths, candidates, excluded
+        )
+        issues: list[Issue] = []
+        entry_points = sorted(
+            {_to_relative_posix(path, root) for path in entry_paths},
+            key=_stable_text_key,
+        )
+        not_reached = len(candidates) - len(documents)
+    else:
+        documents, issues = _collect_documents(root, candidates)
+        entry_points = sorted(
+            (
+                document.relative_path
+                for document in documents
+                if document.path.parent == root
+                and document.path.name.casefold() in ENTRY_POINT_NAMES
+            ),
+            key=_stable_text_key,
+        )
+        not_reached = 0
+    scope = AuditScope(
+        mode="declared_entries" if entries else "all_markdown",
+        entries=tuple(entry_points) if entries else (),
+        excluded_directories=tuple(_to_relative_posix(path, root) for path in excluded),
+        markdown_files_not_reached=not_reached,
+        markdown_files_in_excluded=excluded_count,
+        links_into_excluded=tuple(sorted(links_into_excluded, key=_stable_text_key)),
     )
     if not entry_points:
         issues.append(
@@ -1562,6 +1757,9 @@ def audit_workspace(root_argument: Path) -> AuditResult:
     issues.extend(_check_duplicate_stable_ids(documents))
     status_files, status_issues = _check_status_files(documents)
     issues.extend(status_issues)
+    issues.extend(
+        _check_startup_budget(root, documents, status_files, startup_budget_bytes)
+    )
     three_hop_routes, route_issues = _check_three_hop_routes(
         root, documents, entry_points, status_files
     )
@@ -1575,12 +1773,38 @@ def audit_workspace(root_argument: Path) -> AuditResult:
         status_files=tuple(status_files),
         three_hop_routes=tuple(three_hop_routes),
         issues=tuple(issues),
+        scope=scope,
     )
+
+
+def _render_scope(scope: AuditScope) -> list[str]:
+    if scope.mode == "declared_entries":
+        lines = [
+            "Scope: declared entries and the Markdown they link to: "
+            + ", ".join(scope.entries),
+            f"Markdown files not reached from the entries (not checked): "
+            f"{scope.markdown_files_not_reached}",
+        ]
+    else:
+        lines = ["Scope: all Markdown under the root"]
+    if scope.excluded_directories:
+        lines.append(
+            "Excluded directories (not checked): "
+            + ", ".join(scope.excluded_directories)
+            + f" ({scope.markdown_files_in_excluded} Markdown files)"
+        )
+    if scope.links_into_excluded:
+        lines.append(
+            "Links into excluded directories (targets exist; not checked): "
+            + ", ".join(scope.links_into_excluded)
+        )
+    return lines
 
 
 def _render_text(result: AuditResult) -> str:
     lines = [
         f"Workspace memory audit: {result.root}",
+        *_render_scope(result.scope),
         f"Markdown files read: {result.markdown_file_count}",
         "Entry points: " + (", ".join(result.entry_points) if result.entry_points else "none"),
         "Status files: " + (", ".join(result.status_files) if result.status_files else "none"),
@@ -1589,7 +1813,10 @@ def _render_text(result: AuditResult) -> str:
         f"Issues: {len(result.issues)}",
     ]
     if not result.issues:
-        lines.append("OK: no issues found.")
+        if result.scope.mode == "declared_entries" or result.scope.excluded_directories:
+            lines.append("OK: no issues found within the stated scope.")
+        else:
+            lines.append("OK: no issues found.")
         return "\n".join(lines)
     for issue in result.issues:
         location = issue.path
@@ -1607,6 +1834,14 @@ def _render_json(result: AuditResult) -> str:
         "markdown_file_count": result.markdown_file_count,
         "ok": not result.issues,
         "root": result.root,
+        "scope": {
+            "entries": list(result.scope.entries),
+            "excluded_directories": list(result.scope.excluded_directories),
+            "links_into_excluded": list(result.scope.links_into_excluded),
+            "markdown_files_in_excluded": result.scope.markdown_files_in_excluded,
+            "markdown_files_not_reached": result.scope.markdown_files_not_reached,
+            "mode": result.scope.mode,
+        },
         "status_files": list(result.status_files),
         "three_hop_routes": list(result.three_hop_routes),
     }
@@ -1624,6 +1859,16 @@ def _render_error(message: str, output_format: str) -> str:
     return "ERROR: " + message
 
 
+def _non_negative_int(value: str) -> int:
+    try:
+        number = int(value)
+    except ValueError as exc:
+        raise argparse.ArgumentTypeError(f"not an integer: {value!r}") from exc
+    if number < 0:
+        raise argparse.ArgumentTypeError("must be zero or a positive integer")
+    return number
+
+
 def _build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description=(
@@ -1635,9 +1880,35 @@ def _build_parser() -> argparse.ArgumentParser:
             "escapes; unresolved template placeholders; duplicate explicit stable-ID "
             "definitions; minimum status fields (objective, verification time/method, "
             "parent route, current state, next action, blockers); and identity clues for "
-            "submitted/frozen baselines; plus a linked entry-to-status-to-evidence route "
-            "within three hops. Exit codes: 0=no issues, 1=issues found, "
+            "submitted/frozen baselines; a UTF-8 byte budget for status documents, "
+            "root instruction entries and memory index files; plus a linked "
+            "entry-to-status-to-evidence route "
+            "within three hops. With --entry, only the declared entries and the "
+            "Markdown they reach through local links are read and checked; "
+            "--exclude leaves declared directories (history snapshots, templates, "
+            "third-party copies) unread, and the report states both. "
+            "Exit codes: 0=no issues within the stated scope, 1=issues found, "
             "2=usage, traversal, read, or UTF-8 decoding error."
+        ),
+    )
+    parser.add_argument(
+        "--entry",
+        action="append",
+        default=[],
+        metavar="PATH",
+        help=(
+            "Declared active entry document, relative to the root (repeatable). "
+            "Limits the audit to these entries and the Markdown they link to."
+        ),
+    )
+    parser.add_argument(
+        "--exclude",
+        action="append",
+        default=[],
+        metavar="DIR",
+        help=(
+            "Subdirectory, relative to the root, that is not read or checked "
+            "(repeatable); links into it are reported, not followed."
         ),
     )
     parser.add_argument(
@@ -1652,6 +1923,16 @@ def _build_parser() -> argparse.ArgumentParser:
         default="text",
         help="Output format (default: text).",
     )
+    parser.add_argument(
+        "--startup-budget-bytes",
+        type=_non_negative_int,
+        default=DEFAULT_STARTUP_BUDGET_BYTES,
+        help=(
+            "Largest UTF-8 size allowed for a status document, root instruction "
+            "entry or memory index file before it is reported "
+            f"(default: {DEFAULT_STARTUP_BUDGET_BYTES}; 0 disables the check)."
+        ),
+    )
     return parser
 
 
@@ -1660,7 +1941,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = _build_parser()
     arguments = parser.parse_args(argv)
     try:
-        result = audit_workspace(arguments.root)
+        result = audit_workspace(
+            arguments.root,
+            arguments.startup_budget_bytes,
+            entries=arguments.entry,
+            exclude=arguments.exclude,
+        )
     except WorkspaceReadError as exc:
         print(_render_error(str(exc), arguments.format), file=sys.stderr)
         return 2

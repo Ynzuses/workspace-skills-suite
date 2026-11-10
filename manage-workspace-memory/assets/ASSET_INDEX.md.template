@@ -6,6 +6,14 @@
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `<id>` | `<name; purpose>` | `<data/code/document/result/config>` | `<authoritative/mirror/derivative/snapshot/retired>` | `<scope>` | `<relative-link-or-symbolic-external-root>` | `<source ID or provenance>` | `<SemVer; revision>` | `<root@branch/HEAD or not applicable>` | `<method/date/hash if needed>` | `<public/internal/sensitive>` | `<sync direction, supersedes, etc.>` |
 
+## Dependencies Outside the Workspace Root
+
+> List every tool, runtime, or host configuration that this workspace calls but does not carry. Keep machine paths here or in the environment record, never in reusable products.
+
+| Dependency and purpose | Called by | Location | Identity and check | Rebuild on a new machine | Task content leaves the machine? |
+| --- | --- | --- | --- | --- | --- |
+| `<name; purpose>` | `<script, configuration file, or Skill>` | `<machine path or symbolic root>` | `<version; command that proves it works>` | `<installer source and settings to register again>` | `<no / yes, under which rule>` |
+
 ## Conventions
 
 - One authoritative asset per role and scope.

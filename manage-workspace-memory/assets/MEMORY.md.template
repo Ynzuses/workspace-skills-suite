@@ -9,9 +9,11 @@
 3. Active workspace status: `<relative-link-or-routing-table>`
 4. Task-specific authorities: follow the table below.
 
-## Stable Workspace Rules and Lessons
+## Stable Preferences and Lessons
 
-- `<durable rule or transferable lesson; include scope>`
+Rules, permissions, and privacy boundaries live in the rules entry above; link to them instead of restating them here.
+
+- `<durable preference or transferable lesson; include scope>`
 
 ## Active Areas
 
@@ -45,4 +47,4 @@ The actual workspace instruction entry holds the capability checkpoint. Match th
 
 ## Update Rule
 
-Update this file only when a durable rule, shared authority, active-area state, or route changes. Verify target artifacts before changing their status or location here.
+Update this file only when a durable preference, shared authority, active-area state, or route changes. Verify target artifacts before changing their status or location here. Replace a superseded entry in place, carry forward anything still in force, and move the old wording to history.

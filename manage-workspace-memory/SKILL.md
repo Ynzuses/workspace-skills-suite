@@ -1,8 +1,8 @@
 ---
 name: manage-workspace-memory
-description: "Maintain durable project workspaces across sessions: authority and directory design, progressive memory, task-aware Skill/tool/MCP routing after phase changes or context recovery, historical-revision organization, status/index/DAG updates, SemVer identities, optional read-only Git recovery, and frozen handoffs. Compose with domain skills. Do not use for routine cleanup, one-off notes, isolated short-lived tasks, Git commits/pushes, or cloud/vector memory."
+description: "Maintain durable project workspaces across sessions: authority and directory design, progressive memory, maintenance at batch and phase boundaries (current/history separation, retention and retirement decisions, authorized cleanup of accumulated outputs), task-aware Skill/tool/MCP routing after phase changes or context recovery, status/index/DAG updates, SemVer identities, optional read-only Git recovery, and frozen handoffs. Compose with domain skills. Do not use for sorting unrelated folders, isolated file deletion, one-off notes, short-lived tasks, Git commits/pushes, or cloud/vector memory."
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # Manage Workspace Memory
@@ -16,10 +16,11 @@ Make a long-running workspace recoverable without loading its entire history. In
 Read only the references needed for the request:
 
 - **Layer design, source-of-truth decisions, index routing, or conflicts:** read [architecture-and-authority.md](references/architecture-and-authority.md).
-- **Session startup, in-session capture, closure, handoff, or compaction recovery:** read [session-lifecycle.md](references/session-lifecycle.md).
+- **Session startup, in-session capture, closure, handoff, compaction recovery, or an oversized status or index file:** read [session-lifecycle.md](references/session-lifecycle.md).
 - **Capability selection, long-session task/phase changes, Skill/tool/MCP discovery, or restoring capability use after compaction:** read [capability-routing.md](references/capability-routing.md).
-- **New workspace setup, restructuring, migration, portability, or integrity audit:** read [bootstrap-and-audit.md](references/bootstrap-and-audit.md).
+- **New workspace setup, restructuring, migration, portability, tool placement, dependencies outside the root, or integrity audit:** read [bootstrap-and-audit.md](references/bootstrap-and-audit.md).
 - **Growing subdirectories, mixed current/history files, revision retirement, or scratch/source accumulation:** read [directory-lifecycle.md](references/directory-lifecycle.md).
+- **Deciding whether files stay, move to history, or are deleted; cleanup requests; deletion authority; recovery evidence:** read [retention-and-cleanup.md](references/retention-and-cleanup.md).
 - **Version assignment, first-release semantics, review revisions, or optional Git recovery:** read [versioning-and-git.md](references/versioning-and-git.md).
 - **Approved deterministic bootstrap, manifest review, dry-run/apply, or bootstrap conflicts:** also read [bootstrap-manifest-contract.md](references/bootstrap-manifest-contract.md).
 
@@ -69,9 +70,24 @@ Implicit invocation grants no additional write authority. Use these boundaries:
 | --- | --- | --- |
 | discover rules; inventory; infer a profile; inspect links, directory growth, and drift; propose a blueprint | create missing control-plane files; update affected status, index, DAG, and history records; close a session; carry out local organization already covered by that authority | otherwise move, delete, or overwrite user assets; replace a governance entry; alter a frozen baseline; install watchers, hooks, or scheduled tasks; cloud sync; write outside scope; commit, push, or publish |
 
-Check existing session and standing authorization before asking again. A request to improve a Skill using another project as an example does not authorize reorganizing that example project.
+Check existing session and standing authorization before asking again. A scope-specific instruction such as "judge and delete what is certainly unused in this project" is deletion authority for items there that pass the [retention checks](references/retention-and-cleanup.md); do not ask again for those items. Client Full access, a writable sandbox, or a Git automation mode is technical capability or a different consent, never deletion authority. The latest narrowing or withdrawal applies before the next write. A request to improve a Skill using another project as an example does not authorize reorganizing that example project.
 
 No durable event means no memory-file touch. Routine answers and read-only inspections must not generate administrative churn.
+
+## Maintain as Part of the Work
+
+In an existing durable workspace, maintenance belongs to the lifecycle; it does not wait for a cleanup request. Accumulation that nobody resolves at the boundary where it appears is what later forces a large, risky reorganization. After batch output, a version supersession, a phase close, or any change that moves the recovery point, add the affected entries and directories to the current task. Read their actual roles and dependencies, then keep them, update the current entry, archive, or retire.
+
+Before closing, resolve each affected scope to one outcome:
+
+| Outcome | Meaning |
+| --- | --- |
+| applied | changed and verified within authority |
+| retained | the existing state still serves; the reason is stated |
+| awaiting decision | a specific user decision is needed and has been put to the user in the conversation, with candidates, evidence, size, and recovery route |
+| blocked | a stated condition prevents action; its clearance condition is recorded |
+
+Keep the check proportionate: only the scopes the session affected, no workspace-wide scan for a local task, and no maintenance step for an isolated edit outside a durable workspace. Judge value from role, consumers, uniqueness, frozen state, rebuild cost, and recovery evidence, never from a name, age, size, or duplicate hash alone; [retention-and-cleanup.md](references/retention-and-cleanup.md) holds the decision table, recovery proof, and execution checks. A clean Git tree or a shorter startup file is not evidence that maintenance is complete.
 
 ## Maintain Typed Authorities
 
@@ -109,17 +125,19 @@ During work, recheck capability fit at meaningful work boundaries using [capabil
 At session close:
 
 1. verify the artifacts before summarizing them;
-2. update current status and the next executable action; for unfinished multi-step work, retain the needed method/executor and the availability/schema/access checks that must be repeated on resume;
+2. update current status and the next executable action, replacing superseded statements and moving displaced snapshots to history so the startup documents stay within their [reading budget](references/session-lifecycle.md#startup-budget); for unfinished multi-step work, retain the needed method/executor and the availability/schema/access checks that must be repeated on resume;
 3. update version records when a release identity, review revision, compatibility classification, or frozen hash changed;
 4. rerun the optional Git read for tracked changes and bind the handoff to the final `HEAD`/working-tree state;
 5. update stable design or asset indexes only where their truth changed;
 6. append consequential decisions to history with evidence and supersession links;
-7. reassess affected directories, archive closed detail within authority, and keep current and historical routes distinct; record any exact deferred action;
+7. reassess affected directories, archive closed detail within authority, and keep current and historical routes distinct; resolve each affected scope as applied, retained, awaiting decision, or blocked, and state pending decisions to the user rather than only in a file;
 8. test that a fresh session can resume through the three-hop read.
 
 After changing status, indexes, README files, audit pointers, or deployment metadata, perform one final physical-artifact check and rebind every recorded hash to the post-update authoritative artifact. An audit created before the final metadata edit is historical evidence, not the current handoff record. If authoritative rendering timed out or was unavailable, preserve that limitation explicitly instead of inheriting an older page count.
 
 When an artifact is submitted or formally circulated, freeze its exact identity in current status and the asset index. Route new feedback to a new revision rather than silently mutating the submitted baseline, and record the trigger that would reopen or supersede it.
+
+When a tool, runtime, or host configuration is installed, moved, upgraded, or removed, decide its placement and record every dependency that lives outside the workspace root in the same session, following [External Dependencies and Placement](references/bootstrap-and-audit.md#external-dependencies-and-placement). A workspace copied to another machine must be rebuildable from that record.
 
 ## Resolve Disagreement by Fact Type
 
@@ -176,7 +194,15 @@ For deterministic read-only checks, run:
 python scripts/audit_workspace_memory.py --root workspace-root --format text
 ```
 
-The audit is a triage aid, not semantic proof. Review reported authority conflicts and status claims against physical artifacts before editing.
+The audit is a triage aid, not semantic proof. Review reported authority conflicts and status claims against physical artifacts before editing. It also reports a status document, root instruction entry, or memory index file above the startup byte budget; pass `--startup-budget-bytes` to set a workspace-specific value.
+
+In a workspace that keeps history snapshots, templates, or third-party copies, a whole-tree audit mixes their expected old links with real breakage in the active route. Declare the active route instead, and leave the other roles unread:
+
+```text
+python scripts/audit_workspace_memory.py --root workspace-root --entry AGENTS.md --exclude history --exclude templates --format text
+```
+
+The report states what was checked, how many Markdown files were not reached or were excluded, and which links point into excluded directories. A pass covers only that stated scope. Do not rewrite a frozen snapshot to silence a warning.
 
 When Git is available, orient the session with:
 
@@ -214,6 +240,8 @@ This Skill applies to software, writing, operations, and research projects. Rese
 Do not call the memory system complete until:
 
 - a fresh session can locate rules, current status, and task evidence in at most three routing hops;
+- the instruction entry, memory index, and current status state only what is in force and fit the startup budget, with superseded snapshots held in history;
+- every tool, runtime, or host configuration outside the workspace root is registered with its identity, check, and rebuild route;
 - the directory blueprint is justified by project characteristics rather than copied mechanically from a template;
 - the discoverable workspace entry routes matching tasks and closure events without requiring repeated user reminders;
 - task/phase changes and context recovery re-evaluate current Skills and tools, include relevant third-party capabilities beyond the project shortlist, and distinguish remembered availability from current access or observed success;
@@ -227,6 +255,8 @@ Do not call the memory system complete until:
 - stable design is separated from transient progress and history;
 - moves, supersessions, and archived detail remain traceable;
 - affected subdirectories have been reassessed after batches, revision replacement, and phase closure; current artifacts are easy to identify, and any deferred organization has a concrete plan;
+- every scope affected by this session's events closed as applied, retained, awaiting decision, or blocked, and decisions awaiting the user were stated in the conversation;
+- any deletion removed exactly the planned set under applicable authority, unique or frozen items had verified recovery or were kept, and retained identities and live routes were rechecked afterwards;
 - privacy, frozen-archive, and public-release boundaries are explicit;
 - a no-change session leaves memory artifacts untouched, and read-only audits do not mutate the workspace;
 - no placeholder, secret, personal path, or project-specific content remains in reusable outputs.

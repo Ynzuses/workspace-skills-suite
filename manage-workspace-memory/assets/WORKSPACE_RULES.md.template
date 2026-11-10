@@ -22,7 +22,7 @@ Match the next bounded action to current advertised Skills and tools before impl
 ## Session Closure
 
 1. Verify claimed outputs.
-2. Update current status and the next executable action.
+2. Update current status and the next executable action; replace superseded statements and move displaced snapshots to history so startup documents stay within `<startup-budget>`.
 3. Update version records for release identity, review revision, compatibility, or frozen-hash changes.
 4. Rerun the optional Git read and record the final coordinate without inventing a commit.
 5. Update design, asset indexes, and history only where their truth changed.
@@ -53,4 +53,5 @@ Choose purpose/lifecycle destinations before batch output. Reassess the affected
 
 - Preferred language and terminology: `<conventions>`
 - Tools and environment boundaries: `<conventions>`
+- Tool placement: `<in-root location for portable tools; machine-level location for installed or shared tools; where dependencies outside the root are registered>`
 - Verification requirements: `<tests-or-evidence>`

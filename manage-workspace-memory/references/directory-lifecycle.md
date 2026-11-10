@@ -34,7 +34,12 @@ Check the current status, asset/version records, scripts, and references before 
 | Superseded draft or closed review/verification bundle | Archive as a coherent revision or phase with a successor pointer |
 | Submitted, sent, published, or otherwise frozen baseline | Preserve exact bytes and identity; retain its existing path unless relocation is explicitly allowed |
 | Temporary extraction, rendering, download, or intermediate output | Isolate by task/run; retain anything needed to reproduce or verify the current result |
+| Regenerable output with recorded inputs and a working rebuild route | May leave the workspace under applicable authority once no active consumer reads it |
+| Retired working copy whose bytes are recoverable from an exact commit or verified backup | May leave the workspace under applicable authority after recovery is confirmed |
+| Live application lock, sync, or upload state | Leave in place; it belongs to a running client |
 | Ownership, authority, or dependency still uncertain | Leave in place and record the specific unresolved classification |
+
+Archiving and deletion are different operations with different authority. Before anything leaves the workspace, follow [retention-and-cleanup.md](retention-and-cleanup.md) for the value judgment, recovery proof, authority check, and exact-set execution.
 
 Before new work, choose the destination by purpose and lifecycle. Put transient render/extraction output in a bounded task/run area rather than adding it beside the deliverable. Promote a scratch script used by the maintained workflow into the owning code area and update callers; a `tmp` label does not prove disposability.
 
@@ -62,6 +67,6 @@ For an authorized move:
 
 ## Closure Result
 
-Resolve each affected scope as: organization applied and verified; existing layout remains useful with a concrete reason; or a bounded pending action with exact blocker/authority and next step. Persist this only when the finding changes durable state; an unchanged healthy inspection creates no administrative files.
+Resolve each affected scope as **applied** (organization changed and verified), **retained** (the existing layout remains useful, with a concrete reason), **awaiting decision** (the exact question has been put to the user), or **blocked** (the condition and next step are recorded). Persist this only when the finding changes durable state; an unchanged healthy inspection creates no administrative files.
 
 The next reader must be able to find the current artifact without comparing filenames, open a retained revision through an archive route, and follow current dependencies without a broken path. A clean root with a crowded child or an archive that still serves as the default current entry has not met that outcome.

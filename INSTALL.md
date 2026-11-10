@@ -1,6 +1,6 @@
 # Workspace Skills Suite: installation and deployment
 
-This guide uses the Vercel `skills` CLI behind [skills.sh](https://skills.sh/docs/cli). Commands pin the installer to `skills@1.7.4`; the product tag is `v1.0.1`. These are independent versions. The tagged repository and release ZIP are alternative installation sources.
+This guide uses the Vercel `skills` CLI behind [skills.sh](https://skills.sh/docs/cli). Commands pin the installer to `skills@1.7.4`; the product tag is `v1.1.0`. These are independent versions. The tagged repository and release ZIP are alternative installation sources.
 
 ## 1. Prepare the environment and inspect existing installations
 
@@ -19,20 +19,22 @@ The first npx run may ask to download the CLI. Inspect existing Skills with the 
 ## 2. Inspect members, then install
 
 ```sh
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --list
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill "*" --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.1.0 --list
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.1.0 --skill "*" --agent codex
 ```
+
+For Claude Code, use `--agent claude-code` instead of `--agent codex`; the destinations are listed in the table below.
 
 Expect **2** members: `manage-workspace-memory`, `git-workspace-closeout`. `--skill "*"` selects this group's members. Avoid `--all` here because it also selects all agents. Review the destination and installation method in the interactive prompts.
 
 To select one member or install the group for your user account:
 
 ```sh
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill manage-workspace-memory --agent codex
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill "*" --agent codex --global
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.1.0 --skill manage-workspace-memory --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.1.0 --skill "*" --agent codex --global
 ```
 
-`--global` makes the installation available across projects; omitting it selects the current project. Keep double quotes around the star in PowerShell and common Unix shells. `/tree/v1.0.1` selects the Git tag. Do not append `@1.0.1` to a repository shorthand to mean a product version: the CLI also uses `@` to select a Skill.
+`--global` makes the installation available across projects; omitting it selects the current project. Keep double quotes around the star in PowerShell and common Unix shells. `/tree/v1.1.0` selects the Git tag. Do not append `@1.1.0` to a repository shorthand to mean a product version: the CLI also uses `@` to select a Skill.
 
 ## 3. Choose an agent and installation method
 
@@ -47,7 +49,7 @@ The CLI supports symbolic links and copies. Add `--copy` when links are unavaila
 
 ## 4. Use a release ZIP or local checkout
 
-Download `workspace-skills-suite-1.0.1.zip`, verify it against the companion `.sha256` file, and extract it. A complete checkout of the fixed tag also works. Install the member directories rather than treating the whole repository as one Skill. Replace this example with the actual extracted group directory:
+Download `workspace-skills-suite-1.1.0.zip`, verify it against the companion `.sha256` file, and extract it. A complete checkout of the fixed tag also works. Install the member directories rather than treating the whole repository as one Skill. Replace this example with the actual extracted group directory:
 
 ```sh
 npx skills@1.7.4 add "./workspace-skills-suite" --list
@@ -98,7 +100,7 @@ Consent and execution permissions must both allow the action. `auto` removes rep
 | No initial choices | Any permissions, including Full access | Read-only inspection; ask for missing choices before saving policy or changing Git state |
 | Local `off` | Git metadata writable | No local snapshot |
 | Local `ask` | Git metadata writable | Show the current plan and await affirmative approval before committing |
-| Local `auto` | Git metadata protected as read-only | Stop at the permission boundary; use a permitted approval or separately authorized profile setup |
+| Local `auto` | Git metadata protected as read-only, or the client prompts for the command | Stop at the permission boundary, or wait for the client approval; use a permitted approval, rule or separately authorized profile setup |
 | Local `auto` | Actual Git directory writable under an authorized profile | Review and commit within the saved scope; other Git blockers still apply |
 | Remote `off` | Network and credentials available | No push; local consent does not authorize transmission |
 | Remote `ask` or `auto` | Network blocked, credentials unavailable, or destination/history outside the saved scope | Stop and report the concrete blocker; a successful local commit remains local |
@@ -110,7 +112,9 @@ Local commits and private policy persistence need writable Git metadata. In Code
 
 The [permission reference](git-workspace-closeout/references/permissions.md) contains the TOML example and verification steps. Its inherited **2026-10-15 macOS / Codex CLI 0.162.0-alpha.17.2** record reports successful policy persistence and a one-file commit under such a profile, with protected directories, outside writes and loopback binding still blocked. This demonstrates that Full access is not inherently necessary. It does not establish native Windows, linked-worktree, managed-policy or IDE-default compatibility; inspect the current client and effective profile before configuring it. No machine-specific configuration is shipped or applied by installation.
 
-Only when the client permits neither a suitable narrow profile nor a command approval, and unattended Git writes are required, may Full access be needed. It broadens file and network access and still cannot fix locks, missing Git identity, failing hooks, authentication or server rules. It never replaces commit/push consent. The Skill does not change permissions or retry an explicit denial through another tool. See [OpenAI permissions](https://learn.chatgpt.com/docs/permissions) for current client policy.
+In Claude Code, permission rules and the session's permission mode decide whether a Git command runs. On native Windows, shell commands run unsandboxed, so the rules and mode are the only client-level bound; with the sandbox on macOS, Linux or WSL2, `.git/hooks` and `.git/config` stay write-denied and pushes need the remote host on the network allowlist. To reduce prompts without pre-approving pushes, allow only the helper's local `commit` subcommand and keep an ask rule for `git push`; a push made inside the helper is not visible to a `git push` rule, so do not allow-list the helper as a whole when you want client prompts for pushes. The [Claude Code section](git-workspace-closeout/references/permissions.md#claude-code) has an example and its dated limits.
+
+Only when the client permits neither a suitable narrow profile nor a command approval, and unattended Git writes are required, may Full access be needed. It broadens file and network access and still cannot fix locks, missing Git identity, failing hooks, authentication or server rules. It never replaces commit/push consent. The Skill does not change permissions or retry an explicit denial through another tool. See [OpenAI permissions](https://learn.chatgpt.com/docs/permissions) or [Claude Code permissions](https://code.claude.com/docs/en/permissions) for current client policy.
 
 ### Windows and Python command names
 
@@ -122,7 +126,7 @@ Use a verified Python 3.10+ executable: `python --version`, then the direct driv
 npx skills@1.7.4 list --agent codex
 ```
 
-Add `--global` for a user-wide installation. Then inspect the target agent's available Skills and explicitly invoke `$manage-workspace-memory` for a small task without external side effects. Confirm that the agent read the expected `SKILL.md`. Codex detects Skill changes; refresh or restart according to the host's instructions if an entry does not appear. Installer output does not prove agent discovery or correct workflow behavior.
+Add `--global` for a user-wide installation. Then inspect the target agent's available Skills and explicitly invoke `$manage-workspace-memory` for a small task without external side effects. In Claude Code, invoke it by name (for example `/manage-workspace-memory`) or ask for the task and check that the Skill was loaded. Confirm that the agent read the expected `SKILL.md`. Codex detects Skill changes; for other hosts, refresh or restart according to the host's instructions if an entry does not appear. Installer output does not prove agent discovery or correct workflow behavior.
 
 If an entry is missing, inspect scope, working directory, agent selection, complete files, and duplicate legacy entries. Review project-level `.agents/skills` changes before sharing them. Keep personal runtime directories and credentials out of public repositories.
 

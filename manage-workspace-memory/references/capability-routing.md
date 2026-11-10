@@ -60,6 +60,8 @@ fallback or blocker: ...
 
 Do not persist tokens, private endpoints, complete schemas, account inventories, tool transcripts, or a growing list of every capability used. Mark remembered availability as historical. On compaction/resume, reread the root routing contract and the active action, compare against current metadata, then reload only missing or changed instructions/schemas. Do not assume a compressed summary retained them.
 
+Installed copies drift. When memory says that a discoverable Skill entry points to a particular source or version, check the actual entry, its target, and its version before relying on that record. If they differ, correct this workspace's route record to match what is installed and report the difference. Do not rewire global links, reinstall, or overwrite an independently maintained source as part of route maintenance; that is a separate, authorized task. Keep the states distinct in the record: installed, discovered by the host, instructions read, and successfully used.
+
 ## Recover Without Inventing Success
 
 If discovery returns no match, use a suitable built-in or local method and state the material limitation. If a relevant deferred schema can be retrieved, retrieve it before declaring the tool unavailable. If a tool is unavailable, unsupported, or lacks access, change to an equivalent authorized route or leave the exact blocker; do not retry the unchanged failing call indefinitely. Recheck after a meaningful state change, not after every subsequent step.

@@ -30,10 +30,11 @@ There is no preselected consent policy. Installation starts no service and choos
 Run this from the project where you want to use the group:
 
 ```sh
-npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.0.1 --skill "*" --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.1.0 --skill "*" --agent codex
+npx skills@1.7.4 add https://github.com/Ynzuses/workspace-skills-suite/tree/v1.1.0 --skill "*" --agent claude-code
 ```
 
-This selects every member for Codex and defaults to the current project. Add `--list` to inspect available members or `--global` for user-wide installation. Use `--skill <skill-name>` to select one member, or choose another supported target such as `--agent claude-code`. Keep the first installation interactive so you can review its destination. Use `--copy` if symbolic links are unavailable.
+Each line selects every member for one agent (Codex or Claude Code) and defaults to the current project. Add `--list` to inspect available members or `--global` for user-wide installation. Use `--skill <skill-name>` to select one member, or choose another supported target such as `--agent claude-code`. Keep the first installation interactive so you can review its destination. Use `--copy` if symbolic links are unavailable.
 
 See **[INSTALL.md](INSTALL.md)** for prerequisites, pinned versions, individual installation, discovery paths, dependencies, updates, and removal. Verify discovery and an actual invocation in the target agent after installing the files.
 
@@ -43,7 +44,7 @@ See **[INSTALL.md](INSTALL.md)** for prerequisites, pinned versions, individual 
 
 > Use $git-workspace-closeout to inspect this repository's policy and status read-only. Ask only for missing local-snapshot and remote-push choices; do not commit or push yet.
 
-These are requests to an agent. Codex supports explicit `$skill-name` invocation; other agents use their own invocation interface.
+These are requests to an agent. Codex supports explicit `$skill-name` invocation; Claude Code invokes a Skill by name through its Skill tool or `/skill-name`; other agents use their own invocation interface.
 
 ## Requirements and scope
 

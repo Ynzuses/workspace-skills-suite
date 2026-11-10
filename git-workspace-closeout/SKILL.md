@@ -3,7 +3,7 @@ name: git-workspace-closeout
 description: "Finish repository-wide Git snapshots and optional single-branch pushes under persistent, separate local and remote consent. Use for Git closeout, automation preferences, pending commits or permission failures; not for task-scoped staging, branch switching, repository creation or release publishing."
 license: Apache-2.0
 metadata:
-  version: "1.0.1"
+  version: "1.1.0"
 ---
 
 # Git Workspace Closeout
@@ -20,7 +20,7 @@ After reading the rules and policy read-only, state the actual local and remote 
 
 Reuse actual explicit choices without asking again. A narrow instruction to commit this task does not select automatic whole-worktree snapshots or remote pushes. When relying on standing authorization, explain what it already covers instead of silently presenting it as a default. Respond in the user's language; the example above is not a fixed script.
 
-Tell the user before setup that local writes need access to the actual Git metadata directory. **Full access is not a general requirement**: an allowed command approval or separately authorized narrow permission profile can suffice. Check the current client rather than enabling a broader mode. Read [permissions.md](references/permissions.md) if access is blocked; its documented profile result is a dated macOS test, not a Windows/IDE guarantee.
+Tell the user before setup that local writes need access to the actual Git metadata directory. **Full access is not a general requirement**: an allowed command approval, a narrow permission rule, or a separately authorized narrow permission profile can suffice. Check the current client rather than enabling a broader mode. Read [permissions.md](references/permissions.md) if access is blocked; it covers Codex profiles and Claude Code rules and modes, and its recorded results are dated observations, not guarantees for other platforms or IDEs.
 
 ## Read and preserve consent
 
@@ -55,7 +55,7 @@ Read [authorization.md](references/authorization.md). Require an explicitly boun
 
 ## Permission failures
 
-Read [permissions.md](references/permissions.md) when metadata or network access is blocked. A saved automatic choice is user intent, not an operating-system permission grant. Prefer an available, allowed authorization mechanism for the **same bounded command**. Do not silently change Codex configuration, turn off the sandbox, install broad allow rules or bypass a denial. If the user explicitly requests permission configuration, the reference describes a supported named profile granting only the verified Git directory while retaining other workspace protections; review and test that setup separately. [recovery.md](references/recovery.md) distinguishes persistent permission boundaries, service failures, locks, hooks and unverified results.
+Read [permissions.md](references/permissions.md) when metadata or network access is blocked. A saved automatic choice is user intent, not an operating-system permission grant. Prefer an available, allowed authorization mechanism for the **same bounded command**. Do not silently change client configuration (Codex profiles, Claude Code settings or any other host's permissions), turn off the sandbox, install broad allow rules or bypass a denial. A client's automatic safety review or classifier approval is not the user's consent; the saved local and remote modes still govern. If the user explicitly requests permission configuration, the reference describes narrow options per client, such as a Codex profile granting only the verified Git directory or a Claude Code allow rule bound to the helper's local subcommand; review and test that setup separately. [recovery.md](references/recovery.md) distinguishes persistent permission boundaries, service failures, locks, hooks and unverified results.
 
 If the environment supports neither an authorized narrow profile nor a permitted command-level approval path and the user requires unattended Git writes, explain that Full access may be necessary in that client and describe its risks before the user changes settings. Full access removes filesystem/network protection; this skill's instructions and checks cannot replace that protection or guarantee against harmful hooks or mistakes.
 
@@ -68,6 +68,8 @@ A skill alone cannot guarantee execution after a crash, forced stop or a missed 
 ## Branch and asset boundaries
 
 Use [branching.md](references/branching.md) to judge ordinary history, alternate routes, frozen baselines and parallel work. This skill observes branch scope; it does not switch/create branches or worktrees. Different worktrees keep separate policies and indexes. Shared work directories are not isolated by assigning two branch names.
+
+A clean tree after a snapshot says that tracked changes are committed. It does not say whether ignored or untracked material is still needed, so this Skill never judges file value, never deletes files to reach a clean state, and its local or remote `auto` modes never authorize deletion. Retention and cleanup decisions belong to the workspace's maintenance method and its own authority.
 
 Even with Full access, do not reset, clean, stash, amend, rewrite history, delete locks, overwrite user assets or bypass hooks. Review hooks as trusted project execution before running them; do not alter or suppress them to get a successful receipt. Public extraction requires its own privacy, history and license review.
 

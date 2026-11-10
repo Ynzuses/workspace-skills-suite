@@ -85,8 +85,9 @@ Follow [bootstrap-manifest-contract.md](bootstrap-manifest-contract.md) for the 
 5. Run the SemVer helper against each active version record and confirm the purpose mode agrees with the work objective.
 6. Run a fresh-session task with only the root entry and a user-like request.
 7. Run a no-change closure and confirm memory-file hashes remain unchanged.
-8. Record remaining risks and the event that should trigger the next review.
-9. Use representative tasks without naming the expected specialist, then change phase/format/system after a handoff or compressed context. Observe current third-party Skill instruction reads and relevant tool discovery, alongside a no-specialist control and an unavailable-connector case. Treat plans, observed execution, and actual long-context reliability as distinct evidence.
+8. After restructuring memory, check the final bytes rather than the plan: the saved original snapshot and its hash, a topic or event locator that leads back to it, open constraints and pending decisions carried into the new current entry, and a fresh-session task that resumes from that entry. A shorter file is not, on its own, a passing result.
+9. Record remaining risks and the event that should trigger the next review.
+10. Use representative tasks without naming the expected specialist, then change phase/format/system after a handoff or compressed context. Observe current third-party Skill instruction reads and relevant tool discovery, alongside a no-specialist control and an unavailable-connector case. Treat plans, observed execution, and actual long-context reliability as distinct evidence.
 
 When several projects share assets, keep shared authorities once at the common scope and reference them. Keep project-specific state inside the owning project. If an existing unusual layout already provides unambiguous ownership, routing, and lifecycle separation, preserve and map it instead of renaming for aesthetics.
 
@@ -103,6 +104,28 @@ When several projects share assets, keep shared authorities once at the common s
 
 If physical assets and indexes disagree, physical inspection establishes location and content; the repaired index then becomes the routing authority.
 
+## External Dependencies and Placement
+
+A workspace is portable only when a reader can tell which of its tools travel with the directory and which must be rebuilt on another machine. Decide the placement of each tool, runtime, or host configuration when it is introduced, and record every dependency that lives outside the workspace root.
+
+| Situation | Placement |
+| --- | --- |
+| used by this workspace only and runnable without an installer | inside the workspace, in its tools location, so that copying the directory carries it |
+| needs an installer, is shared by several workspaces, or is too large to copy with the project | the machine-level location that the workspace rules designate |
+| runtime state that a client or host keeps for itself | where the client keeps it; register it, do not relocate it |
+
+Follow the workspace's own rules on drives, quotas, and privacy when they are stricter. Do not let a default installer destination decide placement.
+
+For each dependency outside the root, record in the asset index or the workspace's environment record:
+
+- its name, purpose, and which script, configuration file, or Skill calls it;
+- its location, written as a machine path in the environment record and as a symbolic root anywhere reusable;
+- its version or other identity, and a command or check that proves it is usable;
+- how to rebuild it on a new machine, including the installer source and any configuration that must be registered again;
+- whether task content leaves the machine through it, and under which rule that is allowed.
+
+Update the record in the same session that installs, moves, upgrades, or removes the dependency. After copying a workspace to another machine, rebuild from this record and run each check before relying on a remembered route.
+
 ## Integrity Audit
 
 Audit at four levels:
@@ -113,7 +136,8 @@ Audit at four levels:
 - every active status has a parent route;
 - every important asset has an owner and authority state;
 - topic memories are reachable without being loaded by default;
-- history and audits are outside active-status prose.
+- history and audits are outside active-status prose;
+- startup-path documents are within the reading budget described in [session-lifecycle.md](session-lifecycle.md#startup-budget).
 
 ### Referential
 
@@ -137,11 +161,16 @@ Audit at four levels:
 
 - no secret, credential, personal identifier, private URL, or sensitive record is embedded unnecessarily;
 - local absolute paths are isolated from reusable products;
+- every tool, runtime, or host configuration outside the workspace root is registered with its identity, check, and rebuild route;
 - private assets are excluded from public version control and examples;
 - frozen archives remain unchanged;
 - public templates contain placeholders, not project facts.
 
 The deterministic audit reports inspectable signals; it does not decide scientific truth, authority ownership, or whether a status statement is factually current. Resolve those against primary artifacts and explicit decisions.
+
+Audit the active route separately from historical material. Pass the actual startup entries with `--entry` and declare history snapshots, templates, and third-party copies with `--exclude`; the report then lists what was not reached or excluded and which active links point into excluded directories. A historical snapshot's relative links resolve against the location it was written in, which its history index should record; judge them there instead of rewriting the snapshot. Report "the declared active route passed" rather than a workspace-wide pass, and list the unchecked scope. Volume, mixed topics, several current-looking statements, and repeated rules are signals to explain, not findings the script can settle.
+
+Git and maintenance answer different questions. A clean working tree means tracked changes are committed; it says nothing about ignored or untracked material, unique evidence in scratch areas, or unresolved clutter. Never use a clean tree as the acceptance evidence for maintenance.
 
 ## Public Product Extraction
 
@@ -166,4 +195,6 @@ Retain a compact audit record containing:
 - link and stale-path results;
 - privacy and portability results;
 - fresh-session test prompt and observed outcome;
+- for maintenance: the outcome of each affected scope, the exact set removed or moved with before/after identities, and the retained items whose hashes were rechecked;
+- what was not checked, and which results are behavioral observations rather than script results;
 - remaining risks and next review trigger.

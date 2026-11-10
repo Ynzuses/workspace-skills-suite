@@ -54,6 +54,16 @@ Avoid a single claim such as “the newest file always wins.” Authority depend
 
 If two artifacts claim the same role, designate one as authoritative. Mark the other as a mirror, derivative, delivery copy, or historical snapshot, and state the synchronization direction.
 
+Rules follow the same principle. A rule, permission procedure, or privacy boundary has one home in the rules layer; the long-term index and topic notes link to it rather than restating it. A restated copy drifts, and two versions of a rule are worse than either one alone.
+
+## Replace the Recovery Point, Keep the Record
+
+Each layer answers its question in the present tense. When a fact in status or the long-term index changes, the new statement replaces the old one in place, so that there is one current answer rather than a sequence of competing ones. The replacement must carry forward whatever is still in force: open constraints, unresolved questions, and the routes to their evidence.
+
+The superseded wording does not disappear. It moves to history or an archived snapshot with its date and what replaced it, so that a later question about an earlier decision can be answered from the original text rather than from a summary. When a snapshot is moved away from the file it came from, record the original location as the link base for its relative links instead of rewriting the snapshot.
+
+Maintenance that only adds is not maintenance. When a new candidate, path, or environment note is recorded, the one it supersedes leaves the current layer in the same update.
+
 ## Identity and Links
 
 - Give important assets stable IDs independent of filenames.
@@ -129,4 +139,7 @@ not itself a SemVer bump.
 - Using review rounds or Git commit counts as a substitute for a SemVer compatibility decision.
 - Using a DAG as a substitute for narrative reasons or decision history.
 - Updating memory before checking the artifact, thereby memorializing an assumption.
+- Recording new outputs while superseded candidates, retired paths, and outdated environment notes stay in the current layer.
+- Shortening a startup file by dropping live constraints, or by keeping only a summary of text that existed nowhere else.
+- Treating a short entry or a clean Git tree as proof that maintenance is complete.
 - Sending private workspace text to an external memory service by default.
